@@ -1,0 +1,38 @@
+#!name=Collection
+#!desc=工具合集
+#!icon=https://raw.githubusercontent.com/Moli-X/Resources/main/Icon/Image/PutApp.png
+
+[Rule]
+AND, ((DOMAIN-SUFFIX, googlevideo.com), (PROTOCOL, QUIC)), REJECT
+AND, ((DOMAIN, youtubei.googleapis.com), (PROTOCOL, QUIC)), REJECT
+
+[Script]
+# ✅ Sub-Store
+http-request ^https?:\/\/sub\.store\/((download)|api\/(preview|sync|(utils\/node-info))) script-path=https://github.com/sub-store-org/Sub-Store/releases/latest/download/sub-store-1.min.js, requires-body=true, timeout=120, tag=Sub-Store Core, img-url=https://raw.githubusercontent.com/58xinian/icon/master/Sub-Store1.png
+http-request ^https?:\/\/sub\.store script-path=https://github.com/sub-store-org/Sub-Store/releases/latest/download/sub-store-0.min.js, requires-body=true, timeout=120, tag=Sub-Store Simple, img-url=https://raw.githubusercontent.com/58xinian/icon/master/Sub-Store1.png
+# ✅ BoxJs
+http-request ^https?:\/\/(.+\.)?boxjs\.(com|net) script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/box/chavy.boxjs.js, requires-body=true, timeout=120, tag=BoxJs, img-url=https://raw.githubusercontent.com/Moli-X/Resources/main/Icon/Image/BoxJS.png
+# ✅ TestFlight
+http-request ^https:\/\/testflight\.apple\.com\/v\d\/(app|account|invite)s\/ script-path=https://raw.githubusercontent.com/NobyDa/Script/master/TestFlight/TestFlightAccount.js, requires-body=true, timeout=120, tag=TestFlight, img-url=https://raw.githubusercontent.com/Moli-X/Resources/main/Icon/Image/TestFlight.png
+# ✅ Nicegram
+http-response ^https?:\/\/nicegram\.cloud\/api\/v\d\/(ai-assistant\/purchase-list|user\/info|telegram\/auth) script-path=https://raw.githubusercontent.com/ddgksf2013/MoYu/master/NicegramProCrack.js, requires-body=true, binary-body-mode=true, tag=Nicegram, img-url=https://raw.githubusercontent.com/Moli-X/Resources/main/Icon/Image/Nicegram.png
+# ✅ YouTube
+http-request ^https:\/\/youtubei\.googleapis\.com\/youtubei\/v1\/(browse|next|player|reel\/reel_watch_sequence|get_watch) script-path=https://raw.githubusercontent.com/Maasea/sgmodule/master/Script/Youtube/dist/youtube.request.preview.js, requires-body=true, binary-body-mode=true, tag=YouTube Request, img-url=https://raw.githubusercontent.com/Moli-X/Resources/main/Icon/Image/Youtube.png
+http-response ^https:\/\/youtubei\.googleapis\.com\/youtubei\/v1\/(browse|next|player|search|reel\/reel_watch_sequence|guide|account\/get_setting|get_watch) script-path=https://raw.githubusercontent.com/Maasea/sgmodule/master/Script/Youtube/dist/youtube.response.preview.js, requires-body=true, binary-body-mode=true, tag=YouTube Response, img-url=https://raw.githubusercontent.com/Moli-X/Resources/main/Icon/Image/Youtube.png
+# ✅ Spotify
+http-request ^https:\/\/spclient\.wg\.spotify\.com\/(artistview\/v1\/artist|album-entity-view\/v2\/album)\/ script-path=https://raw.githubusercontent.com/app2smile/rules/master/js/spotify-json.js, timeout=120, tag=Spotify Json, img-url=https://raw.githubusercontent.com/Moli-X/Resources/main/Icon/Image/Spotify.png
+http-response ^https:\/\/spclient\.wg\.spotify\.com\/(bootstrap\/v1\/bootstrap|user-customization-service\/v1\/customize)$ script-path=https://raw.githubusercontent.com/app2smile/rules/master/js/spotify-proto.js, requires-body=true, binary-body-mode=true, tag=Spotify Proto, img-url=https://raw.githubusercontent.com/Moli-X/Resources/main/Icon/Image/Spotify.png
+
+# ⏲️ CronTask
+cron "55 23 * * *" script-path=https://raw.githubusercontent.com/sub-store-org/Sub-Store/release/cron-sync-artifacts.min.js, tag=Sub-Store, img-url=https://raw.githubusercontent.com/58xinian/icon/master/Sub-Store1.png
+cron "0 9 * * *" script-path=https://raw.githubusercontent.com/Peng-YM/QuanX/master/Tasks/exchange.js, tag=Exchange, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/exchangerate.png
+cron "0 9 * * *" script-path=https://raw.githubusercontent.com/Peng-YM/QuanX/master/Tasks/psn.js, tag=PSN, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/PSN.png
+cron "0 9 * * *" script-path=https://raw.githubusercontent.com/Peng-YM/QuanX/master/Tasks/steam.js, tag=Steam, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/steam.png
+cron "0 9 */7 * *" script-path=https://raw.githubusercontent.com/Peng-YM/QuanX/master/Tasks/epic.js, tag=Epic, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/epic.png
+
+[Rewrite]
+^https?:\/\/[\w-]+\.googlevideo\.com\/initplayback.+&oad reject-dict
+^https:\/\/spclient\.wg\.spotify\.com\/user-customization-service\/v1\/customize$ header-del if-none-match
+
+[MITM]
+hostname=sub.store, boxjs.com, boxjs.net, *.boxjs.com, *.boxjs.net, testflight.apple.com, nicegram.cloud, spclient.wg.spotify.com, *.googlevideo.com, youtubei.googleapis.com
