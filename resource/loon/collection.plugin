@@ -1,5 +1,5 @@
 #!name=Collection
-#!desc=工具合集
+#!desc=常用工具合集
 #!icon=https://raw.githubusercontent.com/Moli-X/Resources/main/Icon/Image/PutApp.png
 
 [Rule]
@@ -27,7 +27,6 @@ http-response ^https:\/\/spclient\.wg\.spotify\.com\/(bootstrap\/v1\/bootstrap|u
 cron "55 23 * * *" script-path=https://raw.githubusercontent.com/sub-store-org/Sub-Store/release/cron-sync-artifacts.min.js, tag=Sub-Store, img-url=https://raw.githubusercontent.com/58xinian/icon/master/Sub-Store1.png
 cron "0 9 * * *" script-path=https://raw.githubusercontent.com/Peng-YM/QuanX/master/Tasks/exchange.js, tag=Exchange, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/exchangerate.png
 cron "0 9 * * *" script-path=https://raw.githubusercontent.com/Peng-YM/QuanX/master/Tasks/psn.js, tag=PSN, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/PSN.png
-cron "0 9 * * *" script-path=https://raw.githubusercontent.com/Peng-YM/QuanX/master/Tasks/steam.js, tag=Steam, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/steam.png
 cron "0 9 */7 * *" script-path=https://raw.githubusercontent.com/Peng-YM/QuanX/master/Tasks/epic.js, tag=Epic, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/epic.png
 
 [Rewrite]
