@@ -1,7 +1,6 @@
 #!name = AppleTV
 #!desc = 📺 DualSubs AppleTV
-#!icon = https://raw.githubusercontent.com/DualSubs/Universal/main/src/assets/icon_rounded.png
-#!openUrl = http://boxjs.com/#/app
+#!icon = https://raw.githubusercontent.com/Orz-3/mini/master/Color/AppleTV.png
 #!homepage = https://dualsubs.github.io
 #!author = VirgilClyne[https://github.com/VirgilClyne]
 
@@ -25,5 +24,5 @@ http-response ^https?:\/\/(hls|hls-svod)\.itunes\.apple\.com\/itunes-assets\/(.+
 http-response ^https?:\/\/(hls|hls-svod)\.itunes\.apple\.com\/itunes-assets\/(.+)\/([0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12})\/(.+)\.webvtt\?(.*)subtype=(Official|External) requires-body=1, script-path=https://github.com/DualSubs/Universal/releases/latest/download/Composite.Subtitles.response.bundle.js
 http-response ^https?:\/\/(hls|hls-svod)\.itunes\.apple\.com\/itunes-assets\/(.+)\/([0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12})\/(.+)\.webvtt\?(.*)subtype=Translate requires-body=1, script-path=https://github.com/DualSubs/Universal/releases/latest/download/Translate.response.bundle.js
 
-[MitM]
+[MITM]
 hostname = play-edge.itunes.apple.com, hls.itunes.apple.com, hls-svod.itunes.apple.com, uts-api.itunes.apple.com, umc-tempo-api.apple.com, vod-*.tv.apple.com

@@ -1,6 +1,6 @@
 #!name = TikTok
-#!desc = 🎼 TikTok解锁-韩国
-#!icon = https://avatars.githubusercontent.com/u/100578089
+#!desc = 🎼 TikTok Unlock
+#!icon = https://raw.githubusercontent.com/Orz-3/mini/master/Color/TikTok.png
 
 [URL Rewrite]
 (?<=_region=)CN(?=&) KR 307
@@ -8,5 +8,5 @@
 ^(https?:\/\/(tnc|dm)[\w-]+\.\w+\.com\/.+)(\?)(.+) $1$4 302
 (?<=\d\/\?\w{7}_\w{4}=)1[6-9]..(?=.?.?&) 18.4 307
 
-[MitM]
+[MITM]
 hostname = *.tiktokv.com,*.byteoversea.com,*.tik-tokapi.com
