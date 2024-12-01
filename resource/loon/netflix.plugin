@@ -7,5 +7,5 @@
 [Script]
 http-response ^https?:\/\/(.+)\.oca\.nflxvideo\.net\/\?o=\d+&v=\d+&e=\d+&t=.+ requires-body=1, script-path=https://github.com/DualSubs/Universal/releases/latest/download/Translate.response.bundle.js
 
-[MITM]
+[Mitm]
 hostname = *.oca.nflxvideo.net

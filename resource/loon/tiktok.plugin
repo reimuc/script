@@ -8,5 +8,5 @@
 ^(https?:\/\/(tnc|dm)[\w-]+\.\w+\.com\/.+)(\?)(.+) $1$4 302
 (?<=\d\/\?\w{7}_\w{4}=)1[6-9]..(?=.?.?&) 18.4 307
 
-[MITM]
+[Mitm]
 hostname = *.tiktokv.com,*.byteoversea.com,*.tik-tokapi.com

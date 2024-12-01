@@ -18,5 +18,5 @@ http-response ^https?:\/\/spclient\.wg\.spotify\.com\/color-lyrics\/v2\/track\/\
 http-response ^https?:\/\/spclient\.wg\.spotify\.com\/color-lyrics\/v2\/track\/(.+)\?(.*)format=json(.*)subtype=External requires-body=1, script-path=https://github.com/DualSubs/Universal/releases/latest/download/External.Lyrics.response.bundle.js
 http-response ^https?:\/\/spclient\.wg\.spotify\.com\/color-lyrics\/v2\/track\/\w+\?(.*)subtype=External requires-body=1, binary-body-mode=1, script-path=https://github.com/DualSubs/Universal/releases/latest/download/External.Lyrics.response.bundle.js
 
-[MITM]
+[Mitm]
 hostname = api.spotify.com, spclient.wg.spotify.com

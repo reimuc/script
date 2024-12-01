@@ -26,5 +26,5 @@ http-request ^https?:\/\/youtubei\.googleapis\.com\/youtubei\/v1\/browse(\?.+)?$
 http-response ^https?:\/\/music\.youtube\.com\/youtubei\/v1\/browse\?(.*)subtype=Translate requires-body=1, script-path=https://github.com/DualSubs/Universal/releases/latest/download/Translate.response.bundle.js
 http-response ^https?:\/\/youtubei\.googleapis\.com\/youtubei\/v1\/browse\?(.*)subtype=Translate requires-body=1, binary-body-mode=1, script-path=https://github.com/DualSubs/Universal/releases/latest/download/Translate.response.bundle.js
 
-[MITM]
+[Mitm]
 hostname = www.youtube.com, m.youtube.com, tv.youtube.com, music.youtube.com, youtubei.googleapis.com, -redirector*.googlevideo.com, *.googlevideo.com
