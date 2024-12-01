@@ -1,0 +1,12 @@
+#!name = Netflix
+#!desc = 🎥 DualSubs Netflix
+#!icon = https://raw.githubusercontent.com/DualSubs/Netflix/main/src/assets/icon_rounded.png
+#!openUrl = http://boxjs.com/#/app
+#!homepage = https://dualsubs.github.io
+#!author = VirgilClyne[https://github.com/VirgilClyne]
+
+[Script]
+http-response ^https?:\/\/(.+)\.oca\.nflxvideo\.net\/\?o=\d+&v=\d+&e=\d+&t=.+ requires-body=1, script-path=https://github.com/DualSubs/Universal/releases/latest/download/Translate.response.bundle.js
+
+[MitM]
+hostname = *.oca.nflxvideo.net

@@ -1,27 +1,42 @@
-#!name=Collection
-#!desc=常用工具合集
-#!icon=https://raw.githubusercontent.com/Moli-X/Resources/main/Icon/Image/PutApp.png
+#!name = Collection
+#!desc = ⚙️ 常用工具合集
+#!icon = https://avatars.githubusercontent.com/u/182791244
 
 [Rule]
-AND, ((DOMAIN-SUFFIX, googlevideo.com), (PROTOCOL, QUIC)), REJECT
-AND, ((DOMAIN, youtubei.googleapis.com), (PROTOCOL, QUIC)), REJECT
+DOMAIN, weather-analytics-events.apple.com, REJECT-DROP
+DOMAIN-SUFFIX, tthr.apple.com, REJECT-DROP
 
 [Script]
-# ✅ Sub-Store
-http-request ^https?:\/\/sub\.store\/((download)|api\/(preview|sync|(utils\/node-info))) script-path=https://github.com/sub-store-org/Sub-Store/releases/latest/download/sub-store-1.min.js, requires-body=true, timeout=120, tag=Sub-Store Core, img-url=https://raw.githubusercontent.com/58xinian/icon/master/Sub-Store1.png
-http-request ^https?:\/\/sub\.store script-path=https://github.com/sub-store-org/Sub-Store/releases/latest/download/sub-store-0.min.js, requires-body=true, timeout=120, tag=Sub-Store Simple, img-url=https://raw.githubusercontent.com/58xinian/icon/master/Sub-Store1.png
-# ✅ BoxJs
-http-request ^https?:\/\/(.+\.)?boxjs\.(com|net) script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/box/chavy.boxjs.js, requires-body=true, timeout=120, tag=BoxJs, img-url=https://raw.githubusercontent.com/Moli-X/Resources/main/Icon/Image/BoxJS.png
-# ✅ TestFlight
-http-request ^https:\/\/testflight\.apple\.com\/v\d\/(app|account|invite)s\/ script-path=https://raw.githubusercontent.com/NobyDa/Script/master/TestFlight/TestFlightAccount.js, requires-body=true, timeout=120, tag=TestFlight, img-url=https://raw.githubusercontent.com/Moli-X/Resources/main/Icon/Image/TestFlight.png
-# ✅ Nicegram
-http-response ^https?:\/\/nicegram\.cloud\/api\/v\d\/(ai-assistant\/purchase-list|user\/info|telegram\/auth) script-path=https://raw.githubusercontent.com/ddgksf2013/MoYu/master/NicegramProCrack.js, requires-body=true, binary-body-mode=true, tag=Nicegram, img-url=https://raw.githubusercontent.com/Moli-X/Resources/main/Icon/Image/Nicegram.png
-# ✅ YouTube
-http-request ^https:\/\/youtubei\.googleapis\.com\/youtubei\/v1\/(browse|next|player|reel\/reel_watch_sequence|get_watch) script-path=https://raw.githubusercontent.com/Maasea/sgmodule/master/Script/Youtube/dist/youtube.request.preview.js, requires-body=true, binary-body-mode=true, tag=YouTube Request, img-url=https://raw.githubusercontent.com/Moli-X/Resources/main/Icon/Image/Youtube.png
-http-response ^https:\/\/youtubei\.googleapis\.com\/youtubei\/v1\/(browse|next|player|search|reel\/reel_watch_sequence|guide|account\/get_setting|get_watch) script-path=https://raw.githubusercontent.com/Maasea/sgmodule/master/Script/Youtube/dist/youtube.response.preview.js, requires-body=true, binary-body-mode=true, tag=YouTube Response, img-url=https://raw.githubusercontent.com/Moli-X/Resources/main/Icon/Image/Youtube.png
-# ✅ Spotify
-http-request ^https:\/\/spclient\.wg\.spotify\.com\/(artistview\/v1\/artist|album-entity-view\/v2\/album)\/ script-path=https://raw.githubusercontent.com/app2smile/rules/master/js/spotify-json.js, timeout=120, tag=Spotify Json, img-url=https://raw.githubusercontent.com/Moli-X/Resources/main/Icon/Image/Spotify.png
-http-response ^https:\/\/spclient\.wg\.spotify\.com\/(bootstrap\/v1\/bootstrap|user-customization-service\/v1\/customize)$ script-path=https://raw.githubusercontent.com/app2smile/rules/master/js/spotify-proto.js, requires-body=true, binary-body-mode=true, tag=Spotify Proto, img-url=https://raw.githubusercontent.com/Moli-X/Resources/main/Icon/Image/Spotify.png
+# 🏪 Sub-Store
+http-request ^https?:\/\/sub\.store\/((download)|api\/(preview|sync|(utils\/node-info))) requires-body=1, script-path=https://github.com/sub-store-org/Sub-Store/releases/latest/download/sub-store-1.min.js
+http-request ^https?:\/\/sub\.store requires-body=1, script-path=https://github.com/sub-store-org/Sub-Store/releases/latest/download/sub-store-0.min.js
+
+# 📦 BoxJs
+http-request ^https?:\/\/(.+\.)?boxjs\.(com|net) requires-body=1, script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/box/chavy.boxjs.js
+
+# ⛅️ WeatherKit
+http-response ^https?:\/\/weatherkit\.apple\.com\/api\/v1\/availability\/ requires-body=1, script-path=https://github.com/NSRingo/WeatherKit/releases/latest/download/response.bundle.js
+http-response ^https?:\/\/weatherkit\.apple\.com\/api\/v2\/weather\/ requires-body=1, binary-body-mode=1, script-path=https://github.com/NSRingo/WeatherKit/releases/latest/download/response.bundle.js
+
+# 📰 News
+http-request ^https?:\/\/news(-todayconfig)?-edge\.apple\.com\/v1\/configs requires-body=1, script-path=https://github.com/NSRingo/News/releases/latest/download/request.bundle.js
+http-request ^https?:\/\/news(-sports)?-events\.apple\.com\/analyticseventsv2\/async requires-body=1, script-path=https://github.com/NSRingo/News/releases/latest/download/request.bundle.js
+http-request ^https?:\/\/news-client-search\.apple\.com\/v1\/search script-path=https://github.com/NSRingo/News/releases/latest/download/request.bundle.js
+
+# 🗺️ Maps
+http-request ^https?:\/\/configuration\.ls\.apple\.com\/config\/defaults script-path=https://github.com/NSRingo/GeoServices/releases/latest/download/request.bundle.js
+http-response ^https?:\/\/configuration\.ls\.apple\.com\/config\/defaults requires-body=1, script-path=https://github.com/NSRingo/GeoServices/releases/latest/download/response.bundle.js
+http-request ^https?:\/\/gspe35-ssl\.ls\.apple\.(com|cn)\/config\/announcements script-path=https://github.com/NSRingo/GeoServices/releases/latest/download/request.bundle.js
+http-response ^https?:\/\/gspe35-ssl\.ls\.apple\.(com|cn)\/config\/announcements requires-body=1, binary-body-mode=1, script-path=https://github.com/NSRingo/GeoServices/releases/latest/download/response.bundle.js
+http-request ^https?:\/\/gspe35-ssl\.ls\.apple\.(com|cn)\/geo_manifest\/dynamic\/config script-path=https://github.com/NSRingo/GeoServices/releases/latest/download/request.bundle.js
+http-response ^https?:\/\/gspe35-ssl\.ls\.apple\.(com|cn)\/geo_manifest\/dynamic\/config requires-body=1, binary-body-mode=1, script-path=https://github.com/NSRingo/GeoServices/releases/latest/download/response.bundle.js
+
+# 📍 Location
+http-response ^https?:\/\/gspe1-ssl\.ls\.apple\.com\/pep\/gcc requires-body=1, script-path=https://github.com/NSRingo/GeoServices/releases/latest/download/response.bundle.js
+
+# ✈️ TestFlight
+http-request ^https?:\/\/testflight\.apple\.com\/ requires-body=1, script-path=https://github.com/NSRingo/TestFlight/releases/latest/download/request.js
+http-response ^https?:\/\/testflight\.apple\.com\/ requires-body=1, script-path=https://github.com/NSRingo/TestFlight/releases/latest/download/response.js
 
 # ⏲️ CronTask
 cron "55 23 * * *" script-path=https://raw.githubusercontent.com/sub-store-org/Sub-Store/release/cron-sync-artifacts.min.js, tag=Sub-Store, img-url=https://raw.githubusercontent.com/58xinian/icon/master/Sub-Store1.png
@@ -29,9 +44,5 @@ cron "0 9 * * *" script-path=https://raw.githubusercontent.com/Peng-YM/QuanX/mas
 cron "0 9 * * *" script-path=https://raw.githubusercontent.com/Peng-YM/QuanX/master/Tasks/psn.js, tag=PSN, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/PSN.png
 cron "0 9 */7 * *" script-path=https://raw.githubusercontent.com/Peng-YM/QuanX/master/Tasks/epic.js, tag=Epic, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/epic.png
 
-[Rewrite]
-^https?:\/\/[\w-]+\.googlevideo\.com\/initplayback.+&oad reject-dict
-^https:\/\/spclient\.wg\.spotify\.com\/user-customization-service\/v1\/customize$ header-del if-none-match
-
-[MITM]
-hostname=sub.store, boxjs.com, boxjs.net, *.boxjs.com, *.boxjs.net, testflight.apple.com, nicegram.cloud, spclient.wg.spotify.com, *.googlevideo.com, youtubei.googleapis.com
+[MitM]
+hostname=sub.store, boxjs.com, boxjs.net, *.boxjs.com, *.boxjs.net, weatherkit.apple.com, configuration.ls.apple.com, gspe35-ssl.ls.apple.com, gspe1-ssl.ls.apple.com, news-edge.apple.com, news-todayconfig-edge.apple.com, news-events.apple.com, news-sports-events.apple.com, news-client.apple.com, news-client-search.apple.com, testflight.apple.com
