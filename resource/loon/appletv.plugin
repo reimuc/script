@@ -5,11 +5,11 @@
 #!author = VirgilClyne[https://github.com/VirgilClyne]
 
 [Script]
-http-request ^https?:\/\/uts-api\.itunes\.apple\.com\/uts\/(v1|v2|v3)\/ requires-body=1, script-path=https://github.com/NSRingo/TV/releases/latest/download/request.js
-http-response ^https?:\/\/uts-api\.itunes\.apple\.com\/uts\/(v1|v2|v3)\/ requires-body=1, script-path=https://github.com/NSRingo/TV/releases/latest/download/response.js
-http-request ^https?:\/\/umc-tempo-api\.apple\.com\/(v1|v2|v3)\/ requires-body=1, https://github.com/NSRingo/TV/releases/latest/download/request.js
-http-request ^https?:\/\/play(-edge)?\.itunes\.apple\.com\/WebObjects\/MZPlay(Local)?\.woa\/hls(\/(subscription|workout))?\/playlist\.m3u8 script-path=https://github.com/NSRingo/TV/releases/latest/download/request.js
-http-request ^https?:\/\/play(-edge)?\.itunes\.apple\.com\/WebObjects\/MZPlay(Local)?\.woa\/wa\/(fpsRequest|checkInNonceRequest) script-path=https://github.com/NSRingo/TV/releases/latest/download/request.js
+http-request ^https?:\/\/uts-api\.itunes\.apple\.com\/uts\/(v1|v2|v3)\/ requires-body=1, script-path=https://github.com/NSRingo/TV/releases/latest/download/request.bundle.js
+http-response ^https?:\/\/uts-api\.itunes\.apple\.com\/uts\/(v1|v2|v3)\/ requires-body=1, script-path=https://github.com/NSRingo/TV/releases/latest/download/response.bundle.js
+http-request ^https?:\/\/umc-tempo-api\.apple\.com\/(v1|v2|v3)\/ requires-body=1, https://github.com/NSRingo/TV/releases/latest/download/request.bundle.js
+http-request ^https?:\/\/play(-edge)?\.itunes\.apple\.com\/WebObjects\/MZPlay(Local)?\.woa\/hls(\/(subscription|workout))?\/playlist\.m3u8 script-path=https://github.com/NSRingo/TV/releases/latest/download/request.bundle.js
+http-request ^https?:\/\/play(-edge)?\.itunes\.apple\.com\/WebObjects\/MZPlay(Local)?\.woa\/wa\/(fpsRequest|checkInNonceRequest) script-path=https://github.com/NSRingo/TV/releases/latest/download/request.bundle.js
 http-response ^https?:\/\/(play|play-edge|hls)\.itunes\.apple\.com\/WebObjects\/(MZPlay|MZPlayLocal)\.woa\/hls\/playlist\.m3u8 requires-body=1, script-path=https://github.com/DualSubs/Universal/releases/latest/download/Manifest.response.bundle.js
 http-response ^https?:\/\/vod-(.+)-amt\.tv\.apple\.com\/itunes-assets\/(.+)\/([0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12})\/(.+)_subtitles(_V\d)?\.m3u8\?(.*)subtype= requires-body=1, script-path=https://github.com/DualSubs/Universal/releases/latest/download/Manifest.response.bundle.js
 http-response ^https?:\/\/vod-(.+)-amt\.tv\.apple\.com\/itunes-assets\/(.+)\/([0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12})\/(.+)\.webvtt\?(.*)subtype=(Official|External) requires-body=1, script-path=https://github.com/DualSubs/Universal/releases/latest/download/Composite.Subtitles.response.bundle.js

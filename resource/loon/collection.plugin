@@ -35,14 +35,14 @@ http-response ^https?:\/\/gspe35-ssl\.ls\.apple\.(com|cn)\/geo_manifest\/dynamic
 http-response ^https?:\/\/gspe1-ssl\.ls\.apple\.com\/pep\/gcc requires-body=1, script-path=https://github.com/NSRingo/GeoServices/releases/latest/download/response.bundle.js
 
 # ✈️ TestFlight
-http-request ^https?:\/\/testflight\.apple\.com\/ requires-body=1, script-path=https://github.com/NSRingo/TestFlight/releases/latest/download/request.js
-http-response ^https?:\/\/testflight\.apple\.com\/ requires-body=1, script-path=https://github.com/NSRingo/TestFlight/releases/latest/download/response.js
+http-request ^https?:\/\/testflight\.apple\.com\/ requires-body=1, script-path=https://github.com/NSRingo/TestFlight/releases/latest/download/request.bundle.js
+http-response ^https?:\/\/testflight\.apple\.com\/ requires-body=1, script-path=https://github.com/NSRingo/TestFlight/releases/latest/download/response.bundle.js
 
 # ⏲️ CronTask
-cron "55 23 * * *" script-path=https://raw.githubusercontent.com/sub-store-org/Sub-Store/release/cron-sync-artifacts.min.js, tag=Sub-Store, img-url=https://raw.githubusercontent.com/58xinian/icon/master/Sub-Store1.png
-cron "0 9 * * *" script-path=https://raw.githubusercontent.com/Peng-YM/QuanX/master/Tasks/exchange.js, tag=Exchange, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/exchangerate.png
-cron "0 9 * * *" script-path=https://raw.githubusercontent.com/Peng-YM/QuanX/master/Tasks/psn.js, tag=PSN, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/PSN.png
-cron "0 9 */7 * *" script-path=https://raw.githubusercontent.com/Peng-YM/QuanX/master/Tasks/epic.js, tag=Epic, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/epic.png
+cron "55 23 * * *" script-path=https://raw.githubusercontent.com/sub-store-org/Sub-Store/release/cron-sync-artifacts.min.js, tag=Sub-Store
+cron "0 9 * * *" script-path=https://raw.githubusercontent.com/Peng-YM/QuanX/master/Tasks/exchange.js, tag=Exchange
+cron "0 9 * * *" script-path=https://raw.githubusercontent.com/Peng-YM/QuanX/master/Tasks/psn.js, tag=PSN
+cron "0 9 */7 * *" script-path=https://raw.githubusercontent.com/Peng-YM/QuanX/master/Tasks/epic.js, tag=Epic
 
 [Mitm]
 hostname=sub.store, boxjs.com, boxjs.net, *.boxjs.com, *.boxjs.net, weatherkit.apple.com, configuration.ls.apple.com, gspe35-ssl.ls.apple.com, gspe1-ssl.ls.apple.com, news-edge.apple.com, news-todayconfig-edge.apple.com, news-events.apple.com, news-sports-events.apple.com, news-client.apple.com, news-client-search.apple.com, testflight.apple.com
