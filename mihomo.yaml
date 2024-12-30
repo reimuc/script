@@ -1,0 +1,292 @@
+p: &p { type: http, interval: 86400, health-check: { enable: true, url: "https://www.apple.com/library/test/success.html", interval: 300 } }
+pr: &pr { type: select, proxies: [ Available,HK,TW,JP,KR,US,SG ] }
+pt: &pt { type: url-test, include-all: true, interval: 600, tolerance: 100 }
+
+ipv6: true
+allow-lan: true
+mixed-port: 7890
+unified-delay: true
+tcp-concurrent: true
+find-process-mode: strict
+external-controller: 0.0.0.0:9090
+
+profile:
+  store-selected: true
+  store-fake-ip: true
+
+sniffer:
+  enable: true
+  sniff:
+    HTTP:
+      ports: [ 80, 8080-8880 ]
+      override-destination: true
+    TLS:
+      ports: [ 443, 8443 ]
+    QUIC:
+      ports: [ 443, 8443 ]
+  skip-domain:
+    - "Mijia Cloud"
+    - "+.push.apple.com"
+
+tun:
+  enable: true
+  stack: mixed
+  dns-hijack:
+    - "any:53"
+    - "tcp://any:53"
+  auto-route: true
+  auto-redirect: true
+  auto-detect-interface: true
+
+dns:
+  enable: true
+  ipv6: true
+  respect-rules: true
+  enhanced-mode: fake-ip
+  fake-ip-filter:
+    - "*"
+    - "+.lan"
+    - "+.local"
+    - "+.market.xiaomi.com"
+  nameserver:
+    - quic://223.5.5.5:853
+    - quic://223.6.6.6:853
+  proxy-server-nameserver:
+    - https://120.53.53.53/dns-query
+    - https://223.5.5.5/dns-query
+
+hosts:
+  mtalk.google.com: 108.177.125.188
+
+proxy-providers:
+  provider1:
+    <<: *p
+    url: "http://localhost:3000/download/Firefly?target=ClashMeta"
+
+proxy-groups:
+
+  - name: Available
+    type: select
+    include-all: true
+    proxies: [ Auto,HK,TW,JP,KR,US,SG,DIRECT ]
+    icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Available.png"
+
+  - name: OpenAI
+    <<: *pr
+    icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/AI.png"
+
+  - name: Telegram
+    <<: *pr
+    icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Telegram.png"
+
+  - name: Twitter
+    <<: *pr
+    icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/X.png"
+
+  - name: Facebook
+    <<: *pr
+    icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Facebook.png"
+
+  - name: Instagram
+    <<: *pr
+    icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Instagram.png"
+
+  - name: PayPal
+    <<: *pr
+    icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/PayPal.png"
+
+  - name: Spotify
+    <<: *pr
+    icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Spotify.png"
+
+  - name: TikTok
+    <<: *pr
+    icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/TikTok.png"
+
+  - name: Bilibili
+    type: select
+    proxies: [ Bypass,TW,HK ]
+    icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/bilibili.png"
+
+  - name: Bahamut
+    type: select
+    proxies: [ Bypass,TW,HK ]
+    icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Bahamut.png"
+
+  - name: YouTube
+    <<: *pr
+    icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/YouTube.png"
+
+  - name: Netflix
+    <<: *pr
+    icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Netflix.png"
+
+  - name: Google
+    <<: *pr
+    icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Google_Search.png"
+
+  - name: Apple
+    <<: *pr
+    icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Apple.png"
+
+  - name: Microsoft
+    <<: *pr
+    icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Microsoft.png"
+
+  - name: Bypass
+    type: select
+    proxies: [ DIRECT,Available ]
+    icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Bypass.png"
+
+  - name: Final
+    type: select
+    proxies: [ Available,Bypass ]
+    icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Final.png"
+
+  - name: Auto
+    <<: *pt
+    icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Auto.png"
+
+  #分隔,下面是地区分组
+  - name: HK
+    <<: *pt
+    filter: "(?i)🇭🇰|港|HK|Hong"
+    icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Hong_Kong.png"
+
+  - name: TW
+    <<: *pt
+    filter: "(?i)🇹🇼|台|TW|Tai"
+    icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Taiwan.png"
+
+  - name: JP
+    <<: *pt
+    filter: "(?i)🇯🇵|日|东京|大阪|JP|Japan"
+    icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Japan.png"
+
+  - name: KR
+    <<: *pt
+    filter: "(?i)🇰🇷|韩|韓|朝|首尔|KR|Korea"
+    icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Korea.png"
+
+  - name: US
+    <<: *pt
+    filter: "(?i)🇺🇸|美|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|US|States|American"
+    icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/United_States.png"
+
+  - name: SG
+    <<: *pt
+    filter: "(?i)🇸🇬|新|狮|獅|SG|Singapore"
+    icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Singapore.png"
+
+rules:
+  - RULE-SET,Lan,DIRECT
+  - RULE-SET,Direct,DIRECT
+  - RULE-SET,Advertising,REJECT
+  - RULE-SET,Advertising_Domain,REJECT
+  - RULE-SET,OpenAI,OpenAI
+  - RULE-SET,Gemini,OpenAI
+  - RULE-SET,Copilot,OpenAI
+  - RULE-SET,Telegram,Telegram
+  - RULE-SET,Twitter,Twitter
+  - RULE-SET,Facebook,Facebook
+  - RULE-SET,Instagram,Instagram
+  - RULE-SET,PayPal,PayPal
+  - RULE-SET,Spotify,Spotify
+  - RULE-SET,TikTok,TikTok
+  - RULE-SET,Bilibili,Bilibili
+  - RULE-SET,Bahamut,Bahamut
+  - RULE-SET,YouTube,YouTube
+  - RULE-SET,Netflix,Netflix
+  - RULE-SET,Google,Google
+  - RULE-SET,Apple,Apple
+  - RULE-SET,Apple_Domain,Apple
+  - RULE-SET,Microsoft,Microsoft
+  - RULE-SET,Global,Available
+  - RULE-SET,Global_Domain,Available
+  - RULE-SET,China,Bypass
+  - RULE-SET,China_Domain,Bypass
+  - MATCH,Final
+
+rule-anchor:
+  class: &class { type: http, interval: 86400, behavior: classical }
+  domain: &domain { type: http, interval: 86400, behavior: domain }
+
+rule-providers:
+  Lan:
+    <<: *class
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Lan/Lan.yaml"
+  Direct:
+    <<: *class
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Direct/Direct.yaml"
+  Advertising:
+    <<: *class
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Advertising/Advertising.yaml"
+  Advertising_Domain:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Advertising/Advertising_Domain.yaml"
+  OpenAI:
+    <<: *class
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/OpenAI/OpenAI.yaml"
+  Gemini:
+    <<: *class
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Gemini/Gemini.yaml"
+  Copilot:
+    <<: *class
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Copilot/Copilot.yaml"
+  Telegram:
+    <<: *class
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Telegram/Telegram.yaml"
+  Twitter:
+    <<: *class
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Twitter/Twitter.yaml"
+  Facebook:
+    <<: *class
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Facebook/Facebook.yaml"
+  Instagram:
+    <<: *class
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Instagram/Instagram.yaml"
+  PayPal:
+    <<: *class
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/PayPal/PayPal.yaml"
+  Spotify:
+    <<: *class
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Spotify/Spotify.yaml"
+  TikTok:
+    <<: *class
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/TikTok/TikTok.yaml"
+  Bilibili:
+    <<: *class
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/BiliBili/BiliBili.yaml"
+  Bahamut:
+    <<: *class
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Bahamut/Bahamut.yaml"
+  YouTube:
+    <<: *class
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/YouTube/YouTube.yaml"
+  Netflix:
+    <<: *class
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Netflix/Netflix.yaml"
+  Google:
+    <<: *class
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Google/Google.yaml"
+  Apple:
+    <<: *class
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Apple/Apple.yaml"
+  Apple_Domain:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Apple/Apple_Domain.yaml"
+  Microsoft:
+    <<: *class
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Microsoft/Microsoft.yaml"
+  Global:
+    <<: *class
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Global/Global.yaml"
+  Global_Domain:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Global/Global_Domain.yaml"
+  China:
+    <<: *class
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/China/China.yaml"
+  China_Domain:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/China/China_Domain.yaml"
