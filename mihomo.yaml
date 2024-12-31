@@ -48,12 +48,17 @@ dns:
     - "+.lan"
     - "+.local"
     - "+.market.xiaomi.com"
+  default-nameserver:
+    - 119.29.29.29
+    - 8.8.8.8
+    - 223.5.5.5
+    - 223.6.6.6
   nameserver:
-    - quic://223.5.5.5:853
-    - quic://223.6.6.6:853
+    - https://dns.alidns.com/dns-query
+    - quic://dns.alidns.com:853
   proxy-server-nameserver:
-    - https://120.53.53.53/dns-query
-    - https://223.5.5.5/dns-query
+    - https://dns.alidns.com/dns-query
+    - quic://dns.alidns.com:853
 
 hosts:
   mtalk.google.com: 108.177.125.188
