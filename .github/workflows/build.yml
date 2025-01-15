@@ -25,7 +25,7 @@ jobs:
     environment: build
     strategy:
       matrix:
-        dotnet: [ "8.0.x" ]
+        dotnet: [ "6.0.x" ]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
