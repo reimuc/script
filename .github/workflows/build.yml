@@ -36,6 +36,7 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ matrix.dotnet }}
+          cache: true
       - name: Build and Run
         run: cd src/Ray.BiliBiliTool.Console && dotnet run
 
@@ -56,5 +57,6 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ matrix.dotnet }}
+          cache: true
       - name: Build and Run
         run: cd src/Ray.BiliBiliTool.Console && dotnet run
