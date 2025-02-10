@@ -39,7 +39,7 @@ jobs:
       - name: Build and Run
         run: cd src/Ray.BiliBiliTool.Console && dotnet run
 
-  build2:
+  live:
     runs-on: ubuntu-latest
     environment: build
     env:
@@ -56,6 +56,5 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ matrix.dotnet }}
-          cache: true
       - name: Build and Run
         run: cd src/Ray.BiliBiliTool.Console && dotnet run
