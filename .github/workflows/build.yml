@@ -26,7 +26,7 @@ jobs:
       Ray_DailyTaskConfig__DayOfExchangeSilver2Coin: 1
     strategy:
       matrix:
-        dotnet: [ "6.0.x" ]
+        dotnet: [ "8.0.x" ]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -36,18 +36,17 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ matrix.dotnet }}
-          cache: true
       - name: Build and Run
         run: cd src/Ray.BiliBiliTool.Console && dotnet run
 
-  build2:
+  live:
     runs-on: ubuntu-latest
     environment: build
     env:
       Ray_RunTasks: LiveFansMedal
     strategy:
       matrix:
-        dotnet: [ "6.0.x" ]
+        dotnet: [ "8.0.x" ]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -57,6 +56,5 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ matrix.dotnet }}
-          cache: true
       - name: Build and Run
         run: cd src/Ray.BiliBiliTool.Console && dotnet run
