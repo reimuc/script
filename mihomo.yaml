@@ -1,4 +1,4 @@
-p: &p { type: http, interval: 86400, health-check: { enable: true, url: "https://www.apple.com/library/test/success.html", interval: 300 } }
+p: &p { type: http, interval: 86400, health-check: { enable: true, url: "https://www.gstatic.com/generate_204", interval: 300 } }
 pr: &pr { type: select, proxies: [ Available,HK,TW,JP,KR,US,SG ] }
 pt: &pt { type: url-test, include-all: true, interval: 600, tolerance: 100 }
 
@@ -58,9 +58,9 @@ hosts:
   mtalk.google.com: 108.177.125.188
 
 proxy-providers:
-  provider1:
+  provider:
     <<: *p
-    url: "http://localhost:3000/download/Firefly?target=ClashMeta"
+    url: "http://localhost:3000/download/Firefly?target=Stash"
 
 proxy-groups:
 
