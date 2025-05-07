@@ -12,13 +12,13 @@ p:
       },
   }
 
+mixed-port: 7890
 ipv6: true
 allow-lan: true
-mixed-port: 7890
 unified-delay: true
 tcp-concurrent: true
 find-process-mode: strict
-external-controller: 0.0.0.0:9090
+external-controller: :9090
 
 profile:
   store-selected: true
@@ -31,7 +31,7 @@ sniffer:
   override-destination: true
   sniff:
     HTTP:
-      ports: ["80", "8080-8880"]
+      ports: ["80", 8080-8880]
     TLS:
       ports: [443, 5228, 8443]
     QUIC:
@@ -53,9 +53,11 @@ tun:
 
 dns:
   enable: true
+  listen: :1053
   ipv6: true
   respect-rules: true
   enhanced-mode: fake-ip
+  fake-ip-range: 28.0.0.1/8
   fake-ip-filter:
     - "*"
     - "+.lan"
