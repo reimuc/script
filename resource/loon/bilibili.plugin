@@ -68,5 +68,5 @@ http-response ^https:\/\/(grpc|app)\.bili(bili\.com|api\.net)\/bilibili\.main\.c
 http-response ^https:\/\/(grpc|app)\.bili(bili\.com|api\.net)\/bilibili\.pgc\.gateway\.player\.v2\.PlayURL\/PlayView$ requires-body=1, binary-body-mode=1, script-path=https://github.com/BiliUniverse/ADBlock/releases/latest/download/response.bundle.js
 
 [Mitm]
-hostname = *.bilibili.com, *.biliapi.net, *.bilivideo.cn, *.bilivideo.com, upos-*-mirrorakam.akamaized.net
+hostname = www.bilibili.com, manga.bilibili.com, api.live.bilibili.com, api.vc.bilibili.com, app.bilibili.com, app.biliapi.net, search.bilibili.com, api.bilibili.com, api.global.bilibili.com, api.biliapi.net, grpc.biliapi.net, *.mcdn.bilivideo.cn, upos-sz-mirror*bstar1.bilivideo.com, upos-*-mirrorakam.akamaized.net
 h2 = true
