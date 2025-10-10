@@ -20,6 +20,10 @@ tcp-concurrent: true
 find-process-mode: strict
 external-controller: :9090
 
+geox-url:
+  mmdb: 'https://geodata.kelee.one/Country-Masaiki.mmdb'
+  asn: 'https://geodata.kelee.one/GeoLite2-ASN-P3TERX.mmdb'
+
 profile:
   store-selected: true
   store-fake-ip: true
@@ -32,6 +36,7 @@ sniffer:
   sniff:
     HTTP:
       ports: [ "80", 8080-8880 ]
+      override-destination: true
     TLS:
       ports: [ 443, 5228, 8443 ]
     QUIC:
