@@ -13,17 +13,10 @@ jobs:
     runs-on: ubuntu-latest
     environment: build
     env:
-      Ray_RunTasks: Daily&VipBigPoint
+      Ray_RunTasks: Daily&Manga&MangaPrivilege&VipPrivilege&Silver2Coin&Charge&VipBigPoint
       Ray_Serilog__WriteTo__3__Args__botToken: ${{ secrets.TG_BOT_TOKEN }}
       Ray_Serilog__WriteTo__3__Args__chatId: ${{ secrets.TG_CHAT_ID }}
-      Ray_DailyTaskConfig__IsWatchVideo: false
-      Ray_DailyTaskConfig__IsShareVideo: false
-      Ray_DailyTaskConfig__IsDonateCoinForArticle: false
       Ray_DailyTaskConfig__SaveCoinsWhenLv6: true
-      Ray_DailyTaskConfig__AutoChargeUpId: -1
-      Ray_DailyTaskConfig__DayOfAutoCharge: 1
-      Ray_DailyTaskConfig__DayOfReceiveVipPrivilege: 1
-      Ray_DailyTaskConfig__DayOfExchangeSilver2Coin: 1
     strategy:
       matrix:
         dotnet: [ "8.0.x" ]
