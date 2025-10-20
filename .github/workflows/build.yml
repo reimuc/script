@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: build
     env:
-      Ray_RunTasks: Daily&Manga&MangaPrivilege&VipPrivilege&Silver2Coin&Charge&VipBigPoint
+      Ray_RunTasks: Daily&Manga&MangaPrivilege&VipPrivilege&Silver2Coin&VipBigPoint
       Ray_Serilog__WriteTo__3__Args__botToken: ${{ secrets.TG_BOT_TOKEN }}
       Ray_Serilog__WriteTo__3__Args__chatId: ${{ secrets.TG_CHAT_ID }}
       Ray_DailyTaskConfig__SaveCoinsWhenLv6: true
