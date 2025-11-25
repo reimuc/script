@@ -22,7 +22,7 @@ jobs:
         dotnet: [ "8.0.x" ]
     steps:
       - name: 🔍 Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: ${{ vars.REPOSITORY }}
       - name: 🔧 Setup .NET
@@ -42,7 +42,7 @@ jobs:
         dotnet: [ "8.0.x" ]
     steps:
       - name: 🔍 Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: ${{ vars.REPOSITORY }}
       - name: 🔧 Setup .NET
