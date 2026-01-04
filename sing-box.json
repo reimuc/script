@@ -1,0 +1,777 @@
+{
+  "log": {
+    "level": "debug",
+    "timestamp": true
+  },
+  "dns": {
+    "servers": [
+      {
+        "type": "tls",
+        "tag": "google",
+        "detour": "Proxy",
+        "server": "8.8.8.8"
+      },
+      {
+        "type": "udp",
+        "tag": "aliyun",
+        "server": "223.5.5.5"
+      },
+      {
+        "type": "fakeip",
+        "tag": "fakeip",
+        "inet4_range": "198.18.0.0/15",
+        "inet6_range": "fc00::/18"
+      }
+    ],
+    "rules": [
+      {
+        "rule_set": [
+          "AWAvenue-ads",
+          "category-ads-all"
+        ],
+        "action": "reject"
+      },
+      {
+        "clash_mode": "direct",
+        "server": "aliyun"
+      },
+      {
+        "clash_mode": "global",
+        "server": "fakeip"
+      },
+      {
+        "rule_set": "cn",
+        "server": "aliyun"
+      },
+      {
+        "query_type": [
+          "A",
+          "AAAA"
+        ],
+        "server": "fakeip"
+      }
+    ],
+    "strategy": "ipv4_only",
+    "independent_cache": true
+  },
+  "inbounds": [
+    {
+      "type": "tproxy",
+      "tag": "tproxy-in",
+      "listen": "::",
+      "listen_port": 12345,
+      "tcp_fast_open": true,
+      "udp_fragment": true
+    }
+  ],
+  "outbounds": [
+    {
+      "type": "selector",
+      "tag": "Proxy",
+      "outbounds": [
+        "Auto",
+        "Available",
+        "HK",
+        "TW",
+        "JP",
+        "KR",
+        "US",
+        "SG",
+        "Direct"
+      ],
+      "default": "US"
+    },
+    {
+      "type": "direct",
+      "tag": "Direct",
+      "routing_mark": "0xff"
+    },
+    {
+      "type": "selector",
+      "tag": "Scholar",
+      "outbounds": [
+        "Proxy",
+        "HK",
+        "TW",
+        "JP",
+        "KR",
+        "US",
+        "SG"
+      ],
+      "default": "US"
+    },
+    {
+      "type": "selector",
+      "tag": "Telegram",
+      "outbounds": [
+        "Proxy",
+        "HK",
+        "TW",
+        "JP",
+        "KR",
+        "US",
+        "SG"
+      ]
+    },
+    {
+      "type": "selector",
+      "tag": "X",
+      "outbounds": [
+        "Proxy",
+        "HK",
+        "TW",
+        "JP",
+        "KR",
+        "US",
+        "SG"
+      ]
+    },
+    {
+      "type": "selector",
+      "tag": "Meta",
+      "outbounds": [
+        "Proxy",
+        "HK",
+        "TW",
+        "JP",
+        "KR",
+        "US",
+        "SG"
+      ]
+    },
+    {
+      "type": "selector",
+      "tag": "Bahamut",
+      "outbounds": [
+        "Proxy",
+        "HK",
+        "TW",
+        "JP"
+      ],
+      "default": "TW"
+    },
+    {
+      "type": "selector",
+      "tag": "Tiktok",
+      "outbounds": [
+        "Proxy",
+        "HK",
+        "TW",
+        "JP",
+        "KR",
+        "US",
+        "SG"
+      ],
+      "default": "JP"
+    },
+    {
+      "type": "selector",
+      "tag": "Spotify",
+      "outbounds": [
+        "Proxy",
+        "HK",
+        "TW",
+        "JP",
+        "KR",
+        "US",
+        "SG"
+      ]
+    },
+    {
+      "type": "selector",
+      "tag": "Media",
+      "outbounds": [
+        "Proxy",
+        "HK",
+        "TW",
+        "JP",
+        "KR",
+        "US",
+        "SG"
+      ],
+      "default": "US"
+    },
+    {
+      "type": "selector",
+      "tag": "Apple",
+      "outbounds": [
+        "Proxy",
+        "HK",
+        "TW",
+        "JP",
+        "KR",
+        "US",
+        "SG"
+      ]
+    },
+    {
+      "type": "selector",
+      "tag": "Google",
+      "outbounds": [
+        "Proxy",
+        "HK",
+        "TW",
+        "JP",
+        "KR",
+        "US",
+        "SG"
+      ]
+    },
+    {
+      "type": "selector",
+      "tag": "Microsoft",
+      "outbounds": [
+        "Proxy",
+        "HK",
+        "TW",
+        "JP",
+        "KR",
+        "US",
+        "SG"
+      ]
+    },
+    {
+      "type": "selector",
+      "tag": "Bypass",
+      "outbounds": [
+        "Direct",
+        "Proxy"
+      ]
+    },
+    {
+      "type": "selector",
+      "tag": "Available",
+      "outbounds": [
+        "🇭🇰 HK-香港 TCP 6666",
+        "🇭🇰 HK-香港 TCP 8888",
+        "🇯🇵 JP-日本 TCP 443",
+        "🇯🇵 JP-日本 WS 80",
+        "🇰🇷 KR-韩国 TCP 443",
+        "🇰🇷 KR-韩国 WS 80",
+        "🇸🇬 SG-新加坡 TCP 443",
+        "🇸🇬 SG-新加坡 WS 80",
+        "🇹🇼 TW-台湾 TCP 443",
+        "🇹🇼 TW-台湾 WS 80",
+        "🇺🇸 US-美国 TCP 443",
+        "🇺🇸 US-美国 WS 80"
+      ]
+    },
+    {
+      "type": "urltest",
+      "tag": "Auto",
+      "outbounds": [
+        "🇭🇰 HK-香港 TCP 6666",
+        "🇭🇰 HK-香港 TCP 8888",
+        "🇯🇵 JP-日本 TCP 443",
+        "🇯🇵 JP-日本 WS 80",
+        "🇰🇷 KR-韩国 TCP 443",
+        "🇰🇷 KR-韩国 WS 80",
+        "🇸🇬 SG-新加坡 TCP 443",
+        "🇸🇬 SG-新加坡 WS 80",
+        "🇹🇼 TW-台湾 TCP 443",
+        "🇹🇼 TW-台湾 WS 80",
+        "🇺🇸 US-美国 TCP 443",
+        "🇺🇸 US-美国 WS 80"
+      ],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "10m0s",
+      "tolerance": 50
+    },
+    {
+      "type": "urltest",
+      "tag": "HK",
+      "outbounds": [
+        "🇭🇰 HK-香港 TCP 6666",
+        "🇭🇰 HK-香港 TCP 8888"
+      ],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "10m0s",
+      "tolerance": 50
+    },
+    {
+      "type": "urltest",
+      "tag": "TW",
+      "outbounds": [
+        "🇹🇼 TW-台湾 TCP 443",
+        "🇹🇼 TW-台湾 WS 80"
+      ],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "10m0s",
+      "tolerance": 50
+    },
+    {
+      "type": "urltest",
+      "tag": "JP",
+      "outbounds": [
+        "🇯🇵 JP-日本 TCP 443",
+        "🇯🇵 JP-日本 WS 80"
+      ],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "10m0s",
+      "tolerance": 50
+    },
+    {
+      "type": "urltest",
+      "tag": "KR",
+      "outbounds": [
+        "🇰🇷 KR-韩国 TCP 443",
+        "🇰🇷 KR-韩国 WS 80"
+      ],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "10m0s",
+      "tolerance": 50
+    },
+    {
+      "type": "urltest",
+      "tag": "US",
+      "outbounds": [
+        "🇺🇸 US-美国 TCP 443",
+        "🇺🇸 US-美国 WS 80"
+      ],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "10m0s",
+      "tolerance": 50
+    },
+    {
+      "type": "urltest",
+      "tag": "SG",
+      "outbounds": [
+        "🇸🇬 SG-新加坡 TCP 443",
+        "🇸🇬 SG-新加坡 WS 80"
+      ],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "10m0s",
+      "tolerance": 50
+    },
+    {
+      "type": "vmess",
+      "tag": "🇭🇰 HK-香港 TCP 6666",
+      "routing_mark": "0xff",
+      "tcp_fast_open": true,
+      "udp_fragment": true,
+      "server": "",
+      "server_port": 0,
+      "uuid": "",
+      "security": ""
+    },
+    {
+      "type": "vmess",
+      "tag": "🇭🇰 HK-香港 TCP 8888",
+      "routing_mark": "0xff",
+      "tcp_fast_open": true,
+      "udp_fragment": true,
+      "server": "",
+      "server_port": 0,
+      "uuid": "",
+      "security": ""
+    },
+    {
+      "type": "vmess",
+      "tag": "🇯🇵 JP-日本 TCP 443",
+      "routing_mark": "0xff",
+      "tcp_fast_open": true,
+      "udp_fragment": true,
+      "server": "",
+      "server_port": 0,
+      "uuid": "",
+      "security": ""
+    },
+    {
+      "type": "vmess",
+      "tag": "🇯🇵 JP-日本 WS 80",
+      "routing_mark": "0xff",
+      "tcp_fast_open": true,
+      "udp_fragment": true,
+      "server": "",
+      "server_port": 0,
+      "uuid": "",
+      "security": ""
+    },
+    {
+      "type": "vmess",
+      "tag": "🇰🇷 KR-韩国 TCP 443",
+      "routing_mark": "0xff",
+      "tcp_fast_open": true,
+      "udp_fragment": true,
+      "server": "",
+      "server_port": 0,
+      "uuid": "",
+      "security": ""
+    },
+    {
+      "type": "vmess",
+      "tag": "🇰🇷 KR-韩国 WS 80",
+      "routing_mark": "0xff",
+      "tcp_fast_open": true,
+      "udp_fragment": true,
+      "server": "",
+      "server_port": 0,
+      "uuid": "",
+      "security": ""
+    },
+    {
+      "type": "vmess",
+      "tag": "🇸🇬 SG-新加坡 TCP 443",
+      "routing_mark": "0xff",
+      "tcp_fast_open": true,
+      "udp_fragment": true,
+      "server": "",
+      "server_port": 0,
+      "uuid": "",
+      "security": ""
+    },
+    {
+      "type": "vmess",
+      "tag": "🇸🇬 SG-新加坡 WS 80",
+      "routing_mark": "0xff",
+      "tcp_fast_open": true,
+      "udp_fragment": true,
+      "server": "",
+      "server_port": 0,
+      "uuid": "",
+      "security": ""
+    },
+    {
+      "type": "vmess",
+      "tag": "🇹🇼 TW-台湾 TCP 443",
+      "routing_mark": "0xff",
+      "tcp_fast_open": true,
+      "udp_fragment": true,
+      "server": "",
+      "server_port": 0,
+      "uuid": "",
+      "security": ""
+    },
+    {
+      "type": "vmess",
+      "tag": "🇹🇼 TW-台湾 WS 80",
+      "routing_mark": "0xff",
+      "tcp_fast_open": true,
+      "udp_fragment": true,
+      "server": "",
+      "server_port": 0,
+      "uuid": "",
+      "security": ""
+    },
+    {
+      "type": "vmess",
+      "tag": "🇺🇸 US-美国 TCP 443",
+      "routing_mark": "0xff",
+      "tcp_fast_open": true,
+      "udp_fragment": true,
+      "server": "",
+      "server_port": 0,
+      "uuid": "",
+      "security": ""
+    },
+    {
+      "type": "vmess",
+      "tag": "🇺🇸 US-美国 WS 80",
+      "routing_mark": "0xff",
+      "tcp_fast_open": true,
+      "udp_fragment": true,
+      "server": "",
+      "server_port": 0,
+      "uuid": "",
+      "security": ""
+    }
+  ],
+  "route": {
+    "rules": [
+      {
+        "action": "sniff"
+      },
+      {
+        "type": "logical",
+        "mode": "or",
+        "rules": [
+          {
+            "port": 53
+          },
+          {
+            "protocol": "dns"
+          }
+        ],
+        "action": "hijack-dns"
+      },
+      {
+        "clash_mode": "direct",
+        "outbound": "Direct"
+      },
+      {
+        "clash_mode": "global",
+        "outbound": "Proxy"
+      },
+      {
+        "rule_set": [
+          "AWAvenue-ads",
+          "category-ads-all"
+        ],
+        "action": "reject"
+      },
+      {
+        "rule_set": [
+          "private",
+          "private-ip"
+        ],
+        "outbound": "Direct"
+      },
+      {
+        "rule_set": [
+          "category-dev@cn",
+          "category-games@cn",
+          "category-media@cn",
+          "googlefcm",
+          "apple@cn",
+          "google@cn",
+          "microsoft@cn"
+        ],
+        "outbound": "Bypass"
+      },
+      {
+        "rule_set": [
+          "category-ai-!cn",
+          "category-scholar-!cn"
+        ],
+        "outbound": "Scholar"
+      },
+      {
+        "rule_set": "telegram",
+        "outbound": "Telegram"
+      },
+      {
+        "rule_set": "x",
+        "outbound": "X"
+      },
+      {
+        "rule_set": "meta",
+        "outbound": "Meta"
+      },
+      {
+        "rule_set": [
+          "dmm",
+          "bahamut",
+          "biliintl"
+        ],
+        "outbound": "Bahamut"
+      },
+      {
+        "rule_set": "tiktok",
+        "outbound": "Tiktok"
+      },
+      {
+        "rule_set": "spotify",
+        "outbound": "Spotify"
+      },
+      {
+        "rule_set": [
+          "hbo",
+          "disney",
+          "netflix",
+          "primevideo",
+          "amazon"
+        ],
+        "outbound": "Media"
+      },
+      {
+        "rule_set": "apple",
+        "outbound": "Apple"
+      },
+      {
+        "rule_set": "google",
+        "outbound": "Google"
+      },
+      {
+        "rule_set": "microsoft",
+        "outbound": "Microsoft"
+      },
+      {
+        "rule_set": "geolocation-!cn",
+        "outbound": "Proxy"
+      },
+      {
+        "rule_set": [
+          "cn",
+          "cn-ip"
+        ],
+        "outbound": "Direct"
+      }
+    ],
+    "rule_set": [
+      {
+        "type": "remote",
+        "tag": "AWAvenue-ads",
+        "url": "https://raw.githubusercontent.com/TG-Twilight/AWAvenue-Ads-Rule/main/Filters/AWAvenue-Ads-Rule-Singbox.json"
+      },
+      {
+        "type": "remote",
+        "tag": "category-ads-all",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/category-ads-all.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "private",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/private.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "private-ip",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geoip/private.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "category-dev@cn",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/category-dev@cn.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "category-games@cn",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/category-games@cn.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "category-media@cn",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/category-media@cn.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "googlefcm",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/googlefcm.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "apple@cn",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/apple@cn.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "google@cn",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/google@cn.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "microsoft@cn",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/microsoft@cn.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "category-ai-!cn",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/category-ai-!cn.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "category-scholar-!cn",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/category-scholar-!cn.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "telegram",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/telegram.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "x",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/x.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "meta",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/meta.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "bahamut",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/bahamut.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "biliintl",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/biliintl.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "dmm",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/dmm.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "tiktok",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/tiktok.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "spotify",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/spotify.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "hbo",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/hbo.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "disney",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/disney.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "netflix",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/netflix.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "primevideo",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/primevideo.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "amazon",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/amazon.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "apple",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/apple.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "google",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/google.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "microsoft",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/microsoft.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "geolocation-!cn",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/geolocation-!cn.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "cn",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/cn.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "cn-ip",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geoip/cn.srs"
+      }
+    ],
+    "auto_detect_interface": true,
+    "default_domain_resolver": "aliyun"
+  },
+  "experimental": {
+    "cache_file": {
+      "enabled": true,
+      "store_fakeip": true,
+      "store_rdrc": true
+    },
+    "clash_api": {
+      "external_controller": "[::]:9090",
+      "external_ui": "ui",
+      "external_ui_download_url": "https://github.com/Zephyruso/zashboard/releases/latest/download/dist-cdn-fonts.zip"
+    }
+  }
+}

@@ -1,0 +1,53 @@
+name: 🧪 CI Tests
+
+on:
+  schedule:
+    - cron: '0 1 * * *'
+  workflow_dispatch:
+
+env:
+  Ray_BiliBiliCookies__1: ${{ secrets.COOKIE }}
+
+jobs:
+  daily:
+    runs-on: ubuntu-latest
+    environment: build
+    env:
+      Ray_RunTasks: Daily&Manga&MangaPrivilege&VipPrivilege&Silver2Coin&VipBigPoint
+      Ray_Serilog__WriteTo__3__Args__botToken: ${{ secrets.TG_BOT_TOKEN }}
+      Ray_Serilog__WriteTo__3__Args__chatId: ${{ secrets.TG_CHAT_ID }}
+      Ray_DailyTaskConfig__SaveCoinsWhenLv6: true
+    strategy:
+      matrix:
+        dotnet: [ "8.0.x" ]
+    steps:
+      - name: 🔍 Checkout
+        uses: actions/checkout@v5
+        with:
+          repository: ${{ vars.REPOSITORY }}
+      - name: 🔧 Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: ${{ matrix.dotnet }}
+      - name: 🔨 Build and Run
+        run: cd src/Ray.BiliBiliTool.Console && dotnet run
+
+  living:
+    runs-on: ubuntu-latest
+    environment: build
+    env:
+      Ray_RunTasks: LiveFansMedal
+    strategy:
+      matrix:
+        dotnet: [ "8.0.x" ]
+    steps:
+      - name: 🔍 Checkout
+        uses: actions/checkout@v5
+        with:
+          repository: ${{ vars.REPOSITORY }}
+      - name: 🔧 Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: ${{ matrix.dotnet }}
+      - name: 🔨 Build and Run
+        run: cd src/Ray.BiliBiliTool.Console && dotnet run

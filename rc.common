@@ -1,0 +1,46 @@
+#!/bin/sh /etc/rc.common
+
+START=99
+USE_PROCD=1
+
+# 你的程序路径
+PROG=/usr/bin/sing-box
+CONF=/etc/sing-box/config.json
+# 刚才保存的防火墙脚本路径
+NFT_SCRIPT=/etc/sing-box/nft-tproxy.sh
+
+start_service() {
+	procd_open_instance
+	procd_set_param command "$PROG" run -c "$CONF"
+	procd_set_param user root
+
+	# 设置资源限制（可选，防止内存溢出）
+	procd_set_param limits core="unlimited"
+	procd_set_param limits nofile="1048576 1048576"
+
+	# 自动重启：如果挂了，尝试重启
+	procd_set_param respawn ${respawn_threshold:-3600} ${respawn_timeout:-5} ${respawn_retry:-5}
+
+	# 标准输出日志（可选）
+	procd_set_param stdout 1
+	procd_set_param stderr 1
+	procd_close_instance
+
+	# ★★★ 重点在这里！启动后加载防火墙规则 ★★★
+	# 等待一下确保进程起来了（可选，通常不需要）
+	echo "🐱 Ava: Loading Sing-Box NFTables rules..."
+	$NFT_SCRIPT
+}
+
+stop_service() {
+	# ★★★ 重点在这里！停止时清理防火墙规则 ★★★
+	# 如果不清理，流量会被导向虚空，导致断网！
+	echo "🐱 Ava: Cleaning up Sing-Box NFTables rules..."
+	nft delete table inet sing-box 2>/dev/null || true
+}
+
+# 额外的 reload 函数，用于重载配置时刷新规则
+reload_service() {
+	stop
+	start
+}
