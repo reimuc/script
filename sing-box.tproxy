@@ -1,0 +1,133 @@
+#!/bin/sh
+
+# ---------------------------------------------------------
+# Sing-Box OpenWrt TProxy NFTables Setup Script
+# Author: Ava (GitHub Copilot)
+# ---------------------------------------------------------
+
+# Configuration
+PROXY_PORT=12345
+PROXY_FWMARK=1
+PROXY_TABLE=100
+ROUTING_MARK=0xff
+
+check_dependencies() {
+    echo "🔍 Checking dependencies..."
+
+    # 1. 检查 ip 命令 (建议安装 ip-full)
+    if ! command -v ip >/dev/null 2>&1; then
+        echo "❌ Error: 'ip' command not found! Please install 'ip-full'."
+        exit 1
+    fi
+
+    # 2. 检查 nft 命令
+    if ! command -v nft >/dev/null 2>&1; then
+        echo "❌ Error: 'nft' command not found! Please install 'nftables'."
+        exit 1
+    fi
+
+    # 3. 检查并加载 TProxy 模块 (核心依赖)
+    if ! lsmod | grep -q "nft_tproxy"; then
+        echo "⚠️ Module nft_tproxy not loaded. Trying to load..."
+        modprobe nft_tproxy
+        if ! lsmod | grep -q "nft_tproxy"; then
+            echo "❌ Error: kmod-nft-tproxy is missing! Please install it: opkg install kmod-nft-tproxy"
+            exit 1
+        fi
+    fi
+
+    # 4. 检查并加载 Socket 模块 (辅助依赖)
+    if ! lsmod | grep -q "nft_socket"; then
+        modprobe nft_socket 2>/dev/null
+    fi
+
+    # 5. 检查并加载 Inet Diag 模块 (Sniff 依赖)
+    if ! lsmod | grep -q "inet_diag"; then
+        modprobe inet_diag 2>/dev/null
+    fi
+}
+
+start() {
+    check_dependencies
+
+    # 1. Configure Routing Rules
+    # ---------------------------
+    # Create a routing table for marked packets to be delivered locally
+    if ! ip rule show | grep -q "fwmark 0x$PROXY_FWMARK lookup $PROXY_TABLE"; then
+        ip rule add fwmark $PROXY_FWMARK table $PROXY_TABLE
+        ip route add local 0.0.0.0/0 dev lo table $PROXY_TABLE
+    fi
+
+    if ! ip -6 rule show | grep -q "fwmark 0x$PROXY_FWMARK lookup $PROXY_TABLE"; then
+        ip -6 rule add fwmark $PROXY_FWMARK table $PROXY_TABLE
+        ip -6 route add local ::/0 dev lo table $PROXY_TABLE
+    fi
+
+    # 2. Configure NFTables
+    # ---------------------------
+    # Create a table and chain for TProxy redirection
+    nft -f - <<EOF
+table inet sing-box {
+    chain prerouting {
+        type filter hook prerouting priority mangle; policy accept;
+
+        # 0. Block DoT (853) to force fallback to standard DNS
+        meta l4proto { tcp, udp } th dport 853 reject comment "Block DoT"
+
+        # Block QUIC (UDP 443) - Optional, uncomment if you want to force TCP
+        # meta l4proto udp th dport 443 reject comment "Block QUIC"
+
+        # 1. Hijack DNS traffic (TCP/UDP 53) to Sing-Box
+        meta l4proto { tcp, udp } th dport 53 tproxy to :$PROXY_PORT meta mark set $PROXY_FWMARK accept comment "Hijack DNS"
+
+        # 2. Skip local and reserved addresses
+        ip daddr { 127.0.0.0/8, 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, 224.0.0.0/4, 255.255.255.255 } return
+        ip6 daddr { ::1, fe80::/10, fc00::/7, ff00::/8 } return
+
+        # 3. Redirect remaining traffic to Sing-Box
+        meta l4proto { tcp, udp } tproxy to :$PROXY_PORT meta mark set $PROXY_FWMARK accept comment "TProxy"
+    }
+
+    chain output {
+        type route hook output priority mangle; policy accept;
+
+        # 1. Exclude sing-box traffic (marked with 0xff)
+        meta mark $ROUTING_MARK return
+
+        # 2. Skip local and reserved addresses
+        ip daddr { 127.0.0.0/8, 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, 224.0.0.0/4, 255.255.255.255 } return
+        ip6 daddr { ::1, fe80::/10, fc00::/7, ff00::/8 } return
+
+        # 3. Mark packets for rerouting to TProxy
+        meta mark set $PROXY_FWMARK
+    }
+}
+EOF
+    echo "Sing-Box TProxy rules applied!"
+}
+
+stop() {
+    # Flush NFTables
+    nft delete table inet sing-box 2>/dev/null || true
+
+    # Remove Routing Rules
+    while ip rule show | grep -q "fwmark 0x$PROXY_FWMARK lookup $PROXY_TABLE"; do
+        ip rule del fwmark $PROXY_FWMARK table $PROXY_TABLE
+    done
+    while ip -6 rule show | grep -q "fwmark 0x$PROXY_FWMARK lookup $PROXY_TABLE"; do
+        ip -6 rule del fwmark $PROXY_FWMARK table $PROXY_TABLE
+    done
+
+    # Remove Routes
+    ip route flush table $PROXY_TABLE
+    ip -6 route flush table $PROXY_TABLE
+
+    echo "Sing-Box TProxy rules cleaned up!"
+}
+
+case "$1" in
+    start) start ;;
+    stop) stop ;;
+    restart) stop; start ;;
+    *) echo "Usage: \$0 {start|stop|restart}" ;;
+esac

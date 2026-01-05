@@ -29,14 +29,14 @@ start_service() {
 	# ★★★ 重点在这里！启动后加载防火墙规则 ★★★
 	# 等待一下确保进程起来了（可选，通常不需要）
 	echo "🐱 Ava: Loading Sing-Box NFTables rules..."
-	$NFT_SCRIPT
+	sh "$NFT_SCRIPT" start
 }
 
 stop_service() {
 	# ★★★ 重点在这里！停止时清理防火墙规则 ★★★
 	# 如果不清理，流量会被导向虚空，导致断网！
 	echo "🐱 Ava: Cleaning up Sing-Box NFTables rules..."
-	nft delete table inet sing-box 2>/dev/null || true
+	sh "$NFT_SCRIPT" stop
 }
 
 # 额外的 reload 函数，用于重载配置时刷新规则
