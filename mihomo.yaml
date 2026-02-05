@@ -1,4 +1,4 @@
-ps: &ps { type: select, proxies: [ PROXY, HK, TW, JP, KR, US, SG, DIRECT ] }
+ps: &ps { type: select, proxies: [ Static, HK, TW, JP, KR, US, SG, DIRECT ] }
 pt: &pt
   type: url-test
   url: https://cp.cloudflare.com/generate_204
@@ -39,6 +39,7 @@ unified-delay: true
 tcp-concurrent: true
 find-process-mode: strict
 global-client-fingerprint: chrome
+
 keep-alive-idle: 600
 keep-alive-interval: 15
 disable-keep-alive: false
@@ -46,99 +47,135 @@ disable-keep-alive: false
 geodata-loader: standard
 geo-auto-update: true
 geox-url:
-  mmdb: 'https://geodata.kelee.one/Country-Masaiki.mmdb'
-  asn: 'https://geodata.kelee.one/GeoLite2-ASN-P3TERX.mmdb'
+  mmdb: "https://geodata.kelee.one/Country-Masaiki.mmdb"
+  asn: "https://geodata.kelee.one/GeoLite2-ASN-P3TERX.mmdb"
+
 profile:
   store-selected: true
   store-fake-ip: true
-external-controller: :9090
 
-tun:
-  enable: false
-  stack: mixed # system/gvisor/mixed
-  auto-route: true
-  auto-redirect: true
-  auto-detect-interface: true
-  strict-route: true # 避免冗余路由污染系统表
-  dns-hijack:
-    - any:53
-    - tcp://any:53
-  mtu: 1500 # 减少 MTU 问题，如网页无法打开、测速慢
-  gso: true # 启用通用分段卸载（提升性能）
-  gso-max-size: 65536
-  udp-timeout: 300 # UDP 会话保持时间
+external-controller: :9090
 
 dns:
   enable: true
+  listen: :1053
   ipv6: true
-  listen: :1053        # 监听地址和端口
-  prefer-h3: false     # 如果DNS服务器支持DoH3会优先使用h3，提升性能
-  respect-rules: true  # 让 DNS 解析遵循 Clash 的路由规则
-  cache-algorithm: arc # 使用性能更优的 ARC 缓存算法
-  cache-size: 2048     # 限制缓存大小，避免占用过多内存
 
-  use-hosts: false        # 使用hosts
-  use-system-hosts: false # 使用系统hosts
+  prefer-h3: true          # 优先使用 DoH3
+  respect-rules: true
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16   # 官方保留段，更安全
+  cache-size: 2048
+  cache-algorithm: arc
 
-  enhanced-mode: fake-ip       # 设置增强模式为 fake-ip 模式，提高解析速度和连接性能
-  fake-ip-range: 28.0.0.1/8
+  use-hosts: false
+  use-system-hosts: false
+
   fake-ip-filter:
-    - +.lan
+    - '*.lan'
+    - '*.local'
+    - 'stun.*'
+    - 'localhost'
+    - 'time.windows.com'
+    - '*.ntp.org'
+    - '*.stunprotocol.org'
+    - '*.msftconnecttest.com'
+    - '*.msftncsi.com'
+    - '*.pool.ntp.org'
+    - '*.qq.com'            # 避免 QQ fake-ip 导致文件传输失败
+    - '*.weixin.qq.com'     # 避免微信局域网互传失败
+    - '*.battlenet.com.cn'  # 暴雪局域网游戏需要直连解析
 
   default-nameserver:
-    - 1.1.1.1                    # Cloudflare Public DNS (UDP)
-    - 8.8.8.8                    # Google Public DNS (UDP)
-  # - system                     # 系统 DNS (保留以防万一)
+    - 1.1.1.1
+    - 8.8.8.8
+    - 2606:4700:4700::1111
+    - 2001:4860:4860::8888
 
-  nameserver: # 默认 DNS，供所有请求使用，支持 DoH3 的在前面
-    - https://1.1.1.1/dns-query    # Cloudflare（支持 H3）
-    - https://dns.google/dns-query # Google（支持 H3）
-    - 1.1.1.1                      # Cloudflare Public DNS (UDP)
-    - 8.8.8.8                      # Google Public DNS (UDP)
+  nameserver:
+    - https://1.1.1.1/dns-query
+    - https://1.0.0.1/dns-query
+    - https://dns.google/dns-query
+    - https://doh.opendns.com/dns-query
+    - 1.1.1.1
+    - 8.8.8.8
 
   nameserver-policy:
-    "rule-set:Direct,China": # 也可以用 geo:cn 匹配 IP
+    "rule-set:Direct,China":
       - https://223.5.5.5/dns-query
       - https://doh.pub/dns-query
-      - 223.5.5.5                   # 阿里 UDP
-      - 119.29.29.29                # 腾讯 UDP
-    "rule-set:Global": # 新增：非中国大陆域名强制走国外 DNS
+      - https://120.53.53.53/dns-query
+      - 223.5.5.5
+      - 119.29.29.29
+    "rule-set:Global,Final":
       - https://1.1.1.1/dns-query
-      - https://dns.google/dns-query
-      - 1.1.1.1
-      - 8.8.8.8
-    "full-nameserver": # 新增：最终兜底，所有未匹配的域名查询强制走国外 DNS
-      - https://1.1.1.1/dns-query
+      - https://1.0.0.1/dns-query
       - https://dns.google/dns-query
       - 1.1.1.1
       - 8.8.8.8
 
   fallback:
-    - 1.1.1.1 # Cloudflare DNS备用
-    - 8.8.8.8 # Google DNS备用
-    - 9.9.9.9 # Quad9 (备选，更注重隐私和安全性)
+    - 8.8.4.4
+    - 2001:4860:4860::8844
 
-  proxy-server-nameserver: # 当请求通过代理（即国外站）时使用
-    - https://1.1.1.1/dns-query     # Cloudflare，DoH3
-    - https://dns.google/dns-query  # Google，DoH3
+  proxy-server-nameserver:
+    - https://1.1.1.1/dns-query
+    - https://dns.google/dns-query
     - 1.1.1.1
     - 8.8.8.8
+
+tun:
+  enable: true
+  stack: mixed
+  auto-route: true
+  auto-redirect: true
+  strict-route: true
+  auto-detect-interface: true
+
+  dns-hijack:
+    - any:53
+    - tcp://any:53
+
+  mtu: 1480     # 更稳更通用
+  gso: true
+  gso-max-size: 65536
+  udp-timeout: 300
 
 sniffer:
   enable: true
   sniff:
     HTTP:
       ports: [ "80", 8080-8880 ]
-      override-destination: true
+      override-destination: true   # 自动修正错误域名，强烈推荐
     TLS:
       ports: [ 443, 8443 ]
+      override-destination: true
     QUIC:
       ports: [ 443, 8443 ]
+      override-destination: true
+
+  # 强制嗅探
   force-domain:
-    - "+.v2ex.com"
+    - "+.v2ex.com"                  # 你自定义的保留
+    - "+.youtube.com"
+    - "+.googlevideo.com"
+    - "+.spotify.com"
+    - "+.telegram.org"
+    - "+.twitch.tv"
+
+  # 禁止嗅探，以免推送/局域网异常
   skip-domain:
-    - Mijia Cloud
-    - '+.push.apple.com'
+    - "Mijia Cloud"
+    - "+.push.apple.com"           # 避免 APNs 断推送
+    - "+.icloud.com"               # 避免 iCloud 报错
+    - "+.local"
+    - "+.lan"
+    - "localhost"
+
+tun-excluded-routes:
+  - 224.0.0.0/3                  # 局域网广播流量
+  - 239.255.255.250/32          # UPnP
+  - 255.255.255.255/32          # 广播
 
 proxy-providers:
   provider:
@@ -150,12 +187,24 @@ proxy-groups:
   - name: PROXY
     type: select
     include-all: true
-    proxies: [ Auto, HK, TW, JP, KR, US, SG, DIRECT ]
-    icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Available.png"
+    icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Proxy.png"
 
-  - name: Scholar
+  - name: Static
+    type: select
+    proxies: [ Auto, HK, TW, JP, KR, US, SG, DIRECT, PROXY ]
+    icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Static.png"
+
+  - name: AI
     <<: *ps
     icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/AI.png"
+
+  - name: Games
+    <<: *ps
+    icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Game.png"
+
+  - name: PayPal
+    <<: *ps
+    icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/PayPal.png"
 
   - name: Telegram
     <<: *ps
@@ -173,9 +222,10 @@ proxy-groups:
     <<: *ps
     icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Facebook.png"
 
-  - name: PayPal
-    <<: *ps
-    icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/PayPal.png"
+  - name: Bahamut
+    type: select
+    proxies: [ DIRECT, TW, HK ]
+    icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Bahamut.png"
 
   - name: Spotify
     <<: *ps
@@ -187,21 +237,17 @@ proxy-groups:
 
   - name: Bilibili
     type: select
-    proxies: [ Bypass, TW, HK ]
+    proxies: [ DIRECT, TW, HK ]
     icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/bilibili.png"
 
-  - name: Bahamut
-    type: select
-    proxies: [ TW, HK ]
-    icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Bahamut.png"
+  - name: Netflix
+    <<: *ps
+    icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Netflix.png"
 
   - name: YouTube
     <<: *ps
     icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/YouTube.png"
 
-  - name: Netflix
-    <<: *ps
-    icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Netflix.png"
 
   - name: Google
     <<: *ps
@@ -217,12 +263,12 @@ proxy-groups:
 
   - name: Bypass
     type: select
-    proxies: [ DIRECT, PROXY ]
+    proxies: [ DIRECT, Static ]
     icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Bypass.png"
 
   - name: Final
     type: select
-    proxies: [ PROXY, DIRECT ]
+    proxies: [ Static, Bypass ]
     icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Final.png"
 
   - name: Auto
@@ -265,20 +311,23 @@ rules:
   - RULE-SET,Direct,DIRECT
   - RULE-SET,AWAvenue,REJECT
   - RULE-SET,Advertising,REJECT
-  - RULE-SET,OpenAI,Scholar
-  - RULE-SET,Gemini,Scholar
-  - RULE-SET,Copilot,Scholar
+  - RULE-SET,GameDownload,Bypass
+  - RULE-SET,Claude,AI
+  - RULE-SET,OpenAI,AI
+  - RULE-SET,Gemini,AI
+  - RULE-SET,Copilot,AI
+  - RULE-SET,Game,Games
+  - RULE-SET,PayPal,PayPal
   - RULE-SET,Telegram,Telegram
   - RULE-SET,Twitter,Twitter
   - RULE-SET,Discord,Discord
   - RULE-SET,Facebook,Facebook
-  - RULE-SET,PayPal,PayPal
+  - RULE-SET,Bahamut,Bahamut
   - RULE-SET,Spotify,Spotify
   - RULE-SET,TikTok,TikTok
   - RULE-SET,Bilibili,Bilibili
-  - RULE-SET,Bahamut,Bahamut
-  - RULE-SET,YouTube,YouTube
   - RULE-SET,Netflix,Netflix
+  - RULE-SET,YouTube,YouTube
   - RULE-SET,Google,Google
   - RULE-SET,Apple,Apple
   - RULE-SET,Microsoft,Microsoft
@@ -303,6 +352,12 @@ rule-providers:
   Advertising:
     <<: *class
     url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Advertising/Advertising_Classical.yaml"
+  GameDownload:
+    <<: *class
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Game/GameDownload/GameDownload.yaml"
+  Claude:
+    <<: *class
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Claude/Claude.yaml"
   OpenAI:
     <<: *class
     url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/OpenAI/OpenAI.yaml"
@@ -312,6 +367,12 @@ rule-providers:
   Copilot:
     <<: *class
     url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Copilot/Copilot.yaml"
+  Game:
+    <<: *class
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Game/Game.yaml"
+  PayPal:
+    <<: *class
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/PayPal/PayPal.yaml"
   Telegram:
     <<: *class
     url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Telegram/Telegram.yaml"
@@ -324,9 +385,9 @@ rule-providers:
   Facebook:
     <<: *class
     url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Facebook/Facebook.yaml"
-  PayPal:
+  Bahamut:
     <<: *class
-    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/PayPal/PayPal.yaml"
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Bahamut/Bahamut.yaml"
   Spotify:
     <<: *class
     url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Spotify/Spotify.yaml"
@@ -336,15 +397,12 @@ rule-providers:
   Bilibili:
     <<: *class
     url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/BiliBili/BiliBili.yaml"
-  Bahamut:
-    <<: *class
-    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Bahamut/Bahamut.yaml"
-  YouTube:
-    <<: *class
-    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/YouTube/YouTube.yaml"
   Netflix:
     <<: *class
     url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Netflix/Netflix.yaml"
+  YouTube:
+    <<: *class
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/YouTube/YouTube.yaml"
   Google:
     <<: *class
     url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Google/Google.yaml"

@@ -1,24 +1,30 @@
 {
   "log": {
-    "level": "debug",
+    "level": "info",
     "timestamp": true
   },
   "dns": {
     "servers": [
       {
-        "type": "tls",
-        "tag": "google",
-        "detour": "Proxy",
-        "server": "8.8.8.8"
+        "type": "local",
+        "tag": "local"
       },
       {
-        "type": "udp",
+        "type": "https",
+        "tag": "google",
+        "detour": "Proxy",
+        "domain_resolver": "local",
+        "server": "dns.google"
+      },
+      {
+        "type": "quic",
         "tag": "aliyun",
-        "server": "223.5.5.5"
+        "domain_resolver": "local",
+        "server": "dns.alidns.com"
       },
       {
         "type": "fakeip",
-        "tag": "fakeip",
+        "tag": "remote",
         "inet4_range": "198.18.0.0/15",
         "inet6_range": "fc00::/18"
       }
@@ -26,7 +32,7 @@
     "rules": [
       {
         "rule_set": [
-          "AWAvenue-ads",
+          "awavenue-ads",
           "category-ads-all"
         ],
         "action": "reject"
@@ -37,40 +43,85 @@
       },
       {
         "clash_mode": "global",
-        "server": "fakeip"
+        "server": "google"
       },
       {
         "rule_set": "cn",
         "server": "aliyun"
       },
       {
+        "type": "logical",
+        "mode": "and",
+        "rules": [
+          {
+            "rule_set": "global",
+            "invert": true
+          },
+          {
+            "rule_set": "cn-ip"
+          }
+        ],
+        "server": "google",
+        "client_subnet": "114.114.114.114/24"
+      },
+      {
         "query_type": [
           "A",
           "AAAA"
         ],
-        "server": "fakeip"
+        "server": "remote"
       }
     ],
-    "strategy": "ipv4_only",
+    "strategy": "prefer_ipv4",
     "independent_cache": true
   },
+  "providers": [
+    {
+      "type": "remote",
+      "tag": "provider",
+      "url": "https://sub.store/download/Firefly",
+      "download_detour": "Direct"
+    }
+  ],
   "inbounds": [
     {
       "type": "tproxy",
       "tag": "tproxy-in",
       "listen": "::",
-      "listen_port": 12345,
-      "tcp_fast_open": true,
-      "udp_fragment": true
+      "listen_port": 12345
     }
   ],
   "outbounds": [
     {
       "type": "selector",
       "tag": "Proxy",
+      "use_all_providers": true
+    },
+    {
+      "type": "selector",
+      "tag": "Static",
       "outbounds": [
         "Auto",
-        "Available",
+        "HK",
+        "TW",
+        "JP",
+        "KR",
+        "US",
+        "SG",
+        "Direct",
+        "Proxy"
+      ]
+    },
+    {
+      "type": "direct",
+      "tag": "Direct",
+      "routing_mark": "0xff"
+    },
+    {
+      "type": "selector",
+      "tag": "Steam",
+      "outbounds": [
+        "Static",
         "HK",
         "TW",
         "JP",
@@ -82,21 +133,47 @@
       "default": "US"
     },
     {
-      "type": "direct",
-      "tag": "Direct",
-      "routing_mark": "0xff"
-    },
-    {
       "type": "selector",
-      "tag": "Scholar",
+      "tag": "AI",
       "outbounds": [
-        "Proxy",
+        "Static",
         "HK",
         "TW",
         "JP",
         "KR",
         "US",
-        "SG"
+        "SG",
+        "Direct"
+      ],
+      "default": "US"
+    },
+    {
+      "type": "selector",
+      "tag": "Games",
+      "outbounds": [
+        "Static",
+        "HK",
+        "TW",
+        "JP",
+        "KR",
+        "US",
+        "SG",
+        "Direct"
+      ],
+      "default": "Direct"
+    },
+    {
+      "type": "selector",
+      "tag": "PayPal",
+      "outbounds": [
+        "Static",
+        "HK",
+        "TW",
+        "JP",
+        "KR",
+        "US",
+        "SG",
+        "Direct"
       ],
       "default": "US"
     },
@@ -104,130 +181,176 @@
       "type": "selector",
       "tag": "Telegram",
       "outbounds": [
-        "Proxy",
+        "Static",
         "HK",
         "TW",
         "JP",
         "KR",
         "US",
-        "SG"
+        "SG",
+        "Direct"
       ]
     },
     {
       "type": "selector",
       "tag": "X",
       "outbounds": [
-        "Proxy",
+        "Static",
         "HK",
         "TW",
         "JP",
         "KR",
         "US",
-        "SG"
+        "SG",
+        "Direct"
       ]
     },
     {
       "type": "selector",
-      "tag": "Meta",
+      "tag": "Discord",
       "outbounds": [
-        "Proxy",
+        "Static",
         "HK",
         "TW",
         "JP",
         "KR",
         "US",
-        "SG"
+        "SG",
+        "Direct"
+      ]
+    },
+    {
+      "type": "selector",
+      "tag": "Facebook",
+      "outbounds": [
+        "Static",
+        "HK",
+        "TW",
+        "JP",
+        "KR",
+        "US",
+        "SG",
+        "Direct"
       ]
     },
     {
       "type": "selector",
       "tag": "Bahamut",
       "outbounds": [
-        "Proxy",
-        "HK",
+        "Direct",
         "TW",
-        "JP"
+        "HK"
       ],
       "default": "TW"
     },
     {
       "type": "selector",
-      "tag": "Tiktok",
+      "tag": "Spotify",
       "outbounds": [
-        "Proxy",
+        "Static",
         "HK",
         "TW",
         "JP",
         "KR",
         "US",
-        "SG"
+        "SG",
+        "Direct"
+      ]
+    },
+    {
+      "type": "selector",
+      "tag": "TikTok",
+      "outbounds": [
+        "Static",
+        "HK",
+        "TW",
+        "JP",
+        "KR",
+        "US",
+        "SG",
+        "Direct"
       ],
       "default": "JP"
     },
     {
       "type": "selector",
-      "tag": "Spotify",
+      "tag": "BiliBili",
       "outbounds": [
-        "Proxy",
-        "HK",
+        "Direct",
         "TW",
-        "JP",
-        "KR",
-        "US",
-        "SG"
+        "HK"
       ]
     },
     {
       "type": "selector",
-      "tag": "Media",
+      "tag": "Netflix",
       "outbounds": [
-        "Proxy",
+        "Static",
         "HK",
         "TW",
         "JP",
         "KR",
         "US",
-        "SG"
+        "SG",
+        "Direct"
       ],
       "default": "US"
     },
     {
       "type": "selector",
-      "tag": "Apple",
+      "tag": "YouTube",
       "outbounds": [
-        "Proxy",
+        "Static",
         "HK",
         "TW",
         "JP",
         "KR",
         "US",
-        "SG"
-      ]
+        "SG",
+        "Direct"
+      ],
+      "default": "US"
     },
     {
       "type": "selector",
       "tag": "Google",
       "outbounds": [
-        "Proxy",
+        "Static",
         "HK",
         "TW",
         "JP",
         "KR",
         "US",
-        "SG"
+        "SG",
+        "Direct"
+      ]
+    },
+    {
+      "type": "selector",
+      "tag": "Apple",
+      "outbounds": [
+        "Static",
+        "HK",
+        "TW",
+        "JP",
+        "KR",
+        "US",
+        "SG",
+        "Direct"
       ]
     },
     {
       "type": "selector",
       "tag": "Microsoft",
       "outbounds": [
-        "Proxy",
+        "Static",
         "HK",
         "TW",
         "JP",
         "KR",
         "US",
-        "SG"
+        "SG",
+        "Direct"
       ]
     },
     {
@@ -235,44 +358,21 @@
       "tag": "Bypass",
       "outbounds": [
         "Direct",
-        "Proxy"
+        "Static"
       ]
     },
     {
       "type": "selector",
-      "tag": "Available",
+      "tag": "Final",
       "outbounds": [
-        "🇭🇰 HK-香港 TCP 6666",
-        "🇭🇰 HK-香港 TCP 8888",
-        "🇯🇵 JP-日本 TCP 443",
-        "🇯🇵 JP-日本 WS 80",
-        "🇰🇷 KR-韩国 TCP 443",
-        "🇰🇷 KR-韩国 WS 80",
-        "🇸🇬 SG-新加坡 TCP 443",
-        "🇸🇬 SG-新加坡 WS 80",
-        "🇹🇼 TW-台湾 TCP 443",
-        "🇹🇼 TW-台湾 WS 80",
-        "🇺🇸 US-美国 TCP 443",
-        "🇺🇸 US-美国 WS 80"
+        "Static",
+        "Bypass"
       ]
     },
     {
       "type": "urltest",
       "tag": "Auto",
-      "outbounds": [
-        "🇭🇰 HK-香港 TCP 6666",
-        "🇭🇰 HK-香港 TCP 8888",
-        "🇯🇵 JP-日本 TCP 443",
-        "🇯🇵 JP-日本 WS 80",
-        "🇰🇷 KR-韩国 TCP 443",
-        "🇰🇷 KR-韩国 WS 80",
-        "🇸🇬 SG-新加坡 TCP 443",
-        "🇸🇬 SG-新加坡 WS 80",
-        "🇹🇼 TW-台湾 TCP 443",
-        "🇹🇼 TW-台湾 WS 80",
-        "🇺🇸 US-美国 TCP 443",
-        "🇺🇸 US-美国 WS 80"
-      ],
+      "use_all_providers": true,
       "url": "https://www.gstatic.com/generate_204",
       "interval": "10m0s",
       "tolerance": 50
@@ -280,10 +380,8 @@
     {
       "type": "urltest",
       "tag": "HK",
-      "outbounds": [
-        "🇭🇰 HK-香港 TCP 6666",
-        "🇭🇰 HK-香港 TCP 8888"
-      ],
+      "include": "(?i)🇭🇰|港|HK|Hong",
+      "use_all_providers": true,
       "url": "https://www.gstatic.com/generate_204",
       "interval": "10m0s",
       "tolerance": 50
@@ -291,10 +389,8 @@
     {
       "type": "urltest",
       "tag": "TW",
-      "outbounds": [
-        "🇹🇼 TW-台湾 TCP 443",
-        "🇹🇼 TW-台湾 WS 80"
-      ],
+      "include": "(?i)🇹🇼|台|TW|Tai",
+      "use_all_providers": true,
       "url": "https://www.gstatic.com/generate_204",
       "interval": "10m0s",
       "tolerance": 50
@@ -302,10 +398,8 @@
     {
       "type": "urltest",
       "tag": "JP",
-      "outbounds": [
-        "🇯🇵 JP-日本 TCP 443",
-        "🇯🇵 JP-日本 WS 80"
-      ],
+      "include": "(?i)🇯🇵|日|东京|大阪|JP|Japan",
+      "use_all_providers": true,
       "url": "https://www.gstatic.com/generate_204",
       "interval": "10m0s",
       "tolerance": 50
@@ -313,10 +407,8 @@
     {
       "type": "urltest",
       "tag": "KR",
-      "outbounds": [
-        "🇰🇷 KR-韩国 TCP 443",
-        "🇰🇷 KR-韩国 WS 80"
-      ],
+      "include": "(?i)🇰🇷|韩|韓|朝|首尔|KR|Korea",
+      "use_all_providers": true,
       "url": "https://www.gstatic.com/generate_204",
       "interval": "10m0s",
       "tolerance": 50
@@ -324,10 +416,8 @@
     {
       "type": "urltest",
       "tag": "US",
-      "outbounds": [
-        "🇺🇸 US-美国 TCP 443",
-        "🇺🇸 US-美国 WS 80"
-      ],
+      "include": "(?i)🇺🇸|美|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|US|States|American",
+      "use_all_providers": true,
       "url": "https://www.gstatic.com/generate_204",
       "interval": "10m0s",
       "tolerance": 50
@@ -335,145 +425,11 @@
     {
       "type": "urltest",
       "tag": "SG",
-      "outbounds": [
-        "🇸🇬 SG-新加坡 TCP 443",
-        "🇸🇬 SG-新加坡 WS 80"
-      ],
+      "include": "(?i)🇸🇬|新|狮|獅|SG|Singapore",
+      "use_all_providers": true,
       "url": "https://www.gstatic.com/generate_204",
       "interval": "10m0s",
       "tolerance": 50
-    },
-    {
-      "type": "vmess",
-      "tag": "🇭🇰 HK-香港 TCP 6666",
-      "routing_mark": "0xff",
-      "tcp_fast_open": true,
-      "udp_fragment": true,
-      "server": "",
-      "server_port": 0,
-      "uuid": "",
-      "security": ""
-    },
-    {
-      "type": "vmess",
-      "tag": "🇭🇰 HK-香港 TCP 8888",
-      "routing_mark": "0xff",
-      "tcp_fast_open": true,
-      "udp_fragment": true,
-      "server": "",
-      "server_port": 0,
-      "uuid": "",
-      "security": ""
-    },
-    {
-      "type": "vmess",
-      "tag": "🇯🇵 JP-日本 TCP 443",
-      "routing_mark": "0xff",
-      "tcp_fast_open": true,
-      "udp_fragment": true,
-      "server": "",
-      "server_port": 0,
-      "uuid": "",
-      "security": ""
-    },
-    {
-      "type": "vmess",
-      "tag": "🇯🇵 JP-日本 WS 80",
-      "routing_mark": "0xff",
-      "tcp_fast_open": true,
-      "udp_fragment": true,
-      "server": "",
-      "server_port": 0,
-      "uuid": "",
-      "security": ""
-    },
-    {
-      "type": "vmess",
-      "tag": "🇰🇷 KR-韩国 TCP 443",
-      "routing_mark": "0xff",
-      "tcp_fast_open": true,
-      "udp_fragment": true,
-      "server": "",
-      "server_port": 0,
-      "uuid": "",
-      "security": ""
-    },
-    {
-      "type": "vmess",
-      "tag": "🇰🇷 KR-韩国 WS 80",
-      "routing_mark": "0xff",
-      "tcp_fast_open": true,
-      "udp_fragment": true,
-      "server": "",
-      "server_port": 0,
-      "uuid": "",
-      "security": ""
-    },
-    {
-      "type": "vmess",
-      "tag": "🇸🇬 SG-新加坡 TCP 443",
-      "routing_mark": "0xff",
-      "tcp_fast_open": true,
-      "udp_fragment": true,
-      "server": "",
-      "server_port": 0,
-      "uuid": "",
-      "security": ""
-    },
-    {
-      "type": "vmess",
-      "tag": "🇸🇬 SG-新加坡 WS 80",
-      "routing_mark": "0xff",
-      "tcp_fast_open": true,
-      "udp_fragment": true,
-      "server": "",
-      "server_port": 0,
-      "uuid": "",
-      "security": ""
-    },
-    {
-      "type": "vmess",
-      "tag": "🇹🇼 TW-台湾 TCP 443",
-      "routing_mark": "0xff",
-      "tcp_fast_open": true,
-      "udp_fragment": true,
-      "server": "",
-      "server_port": 0,
-      "uuid": "",
-      "security": ""
-    },
-    {
-      "type": "vmess",
-      "tag": "🇹🇼 TW-台湾 WS 80",
-      "routing_mark": "0xff",
-      "tcp_fast_open": true,
-      "udp_fragment": true,
-      "server": "",
-      "server_port": 0,
-      "uuid": "",
-      "security": ""
-    },
-    {
-      "type": "vmess",
-      "tag": "🇺🇸 US-美国 TCP 443",
-      "routing_mark": "0xff",
-      "tcp_fast_open": true,
-      "udp_fragment": true,
-      "server": "",
-      "server_port": 0,
-      "uuid": "",
-      "security": ""
-    },
-    {
-      "type": "vmess",
-      "tag": "🇺🇸 US-美国 WS 80",
-      "routing_mark": "0xff",
-      "tcp_fast_open": true,
-      "udp_fragment": true,
-      "server": "",
-      "server_port": 0,
-      "uuid": "",
-      "security": ""
     }
   ],
   "route": {
@@ -504,7 +460,7 @@
       },
       {
         "rule_set": [
-          "AWAvenue-ads",
+          "awavenue-ads",
           "category-ads-all"
         ],
         "action": "reject"
@@ -518,22 +474,31 @@
       },
       {
         "rule_set": [
+          "googlefcm",
           "category-dev@cn",
           "category-games@cn",
           "category-media@cn",
-          "googlefcm",
-          "apple@cn",
           "google@cn",
+          "apple@cn",
           "microsoft@cn"
         ],
         "outbound": "Bypass"
       },
       {
-        "rule_set": [
-          "category-ai-!cn",
-          "category-scholar-!cn"
-        ],
-        "outbound": "Scholar"
+        "rule_set": "steam",
+        "outbound": "Steam"
+      },
+      {
+        "rule_set": "ai",
+        "outbound": "AI"
+      },
+      {
+        "rule_set": "games",
+        "outbound": "Games"
+      },
+      {
+        "rule_set": "paypal",
+        "outbound": "PayPal"
       },
       {
         "rule_set": "telegram",
@@ -544,63 +509,65 @@
         "outbound": "X"
       },
       {
-        "rule_set": "meta",
-        "outbound": "Meta"
+        "rule_set": "discord",
+        "outbound": "Discord"
       },
       {
-        "rule_set": [
-          "dmm",
-          "bahamut",
-          "biliintl"
-        ],
+        "rule_set": "facebook",
+        "outbound": "Facebook"
+      },
+      {
+        "rule_set": "bahamut",
         "outbound": "Bahamut"
-      },
-      {
-        "rule_set": "tiktok",
-        "outbound": "Tiktok"
       },
       {
         "rule_set": "spotify",
         "outbound": "Spotify"
       },
       {
-        "rule_set": [
-          "hbo",
-          "disney",
-          "netflix",
-          "primevideo",
-          "amazon"
-        ],
-        "outbound": "Media"
+        "rule_set": "tiktok",
+        "outbound": "TikTok"
       },
       {
-        "rule_set": "apple",
-        "outbound": "Apple"
+        "rule_set": "bilibili",
+        "outbound": "BiliBili"
+      },
+      {
+        "rule_set": "netflix",
+        "outbound": "Netflix"
+      },
+      {
+        "rule_set": "youtube",
+        "outbound": "YouTube"
       },
       {
         "rule_set": "google",
         "outbound": "Google"
       },
       {
+        "rule_set": "apple",
+        "outbound": "Apple"
+      },
+      {
         "rule_set": "microsoft",
         "outbound": "Microsoft"
       },
       {
-        "rule_set": "geolocation-!cn",
-        "outbound": "Proxy"
+        "rule_set": "global",
+        "outbound": "Static"
       },
       {
         "rule_set": [
           "cn",
           "cn-ip"
         ],
-        "outbound": "Direct"
+        "outbound": "Bypass"
       }
     ],
     "rule_set": [
       {
         "type": "remote",
-        "tag": "AWAvenue-ads",
+        "tag": "awavenue-ads",
         "url": "https://raw.githubusercontent.com/TG-Twilight/AWAvenue-Ads-Rule/main/Filters/AWAvenue-Ads-Rule-Singbox.json"
       },
       {
@@ -620,6 +587,11 @@
       },
       {
         "type": "remote",
+        "tag": "googlefcm",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/googlefcm.srs"
+      },
+      {
+        "type": "remote",
         "tag": "category-dev@cn",
         "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/category-dev@cn.srs"
       },
@@ -635,8 +607,8 @@
       },
       {
         "type": "remote",
-        "tag": "googlefcm",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/googlefcm.srs"
+        "tag": "google@cn",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/google@cn.srs"
       },
       {
         "type": "remote",
@@ -645,23 +617,28 @@
       },
       {
         "type": "remote",
-        "tag": "google@cn",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/google@cn.srs"
-      },
-      {
-        "type": "remote",
         "tag": "microsoft@cn",
         "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/microsoft@cn.srs"
       },
       {
         "type": "remote",
-        "tag": "category-ai-!cn",
+        "tag": "steam",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/steam.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "ai",
         "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/category-ai-!cn.srs"
       },
       {
         "type": "remote",
-        "tag": "category-scholar-!cn",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/category-scholar-!cn.srs"
+        "tag": "games",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/category-games.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "paypal",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/paypal.srs"
       },
       {
         "type": "remote",
@@ -675,7 +652,12 @@
       },
       {
         "type": "remote",
-        "tag": "meta",
+        "tag": "discord",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/discord.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "facebook",
         "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/meta.srs"
       },
       {
@@ -685,13 +667,8 @@
       },
       {
         "type": "remote",
-        "tag": "biliintl",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/biliintl.srs"
-      },
-      {
-        "type": "remote",
-        "tag": "dmm",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/dmm.srs"
+        "tag": "spotify",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/spotify.srs"
       },
       {
         "type": "remote",
@@ -700,18 +677,8 @@
       },
       {
         "type": "remote",
-        "tag": "spotify",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/spotify.srs"
-      },
-      {
-        "type": "remote",
-        "tag": "hbo",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/hbo.srs"
-      },
-      {
-        "type": "remote",
-        "tag": "disney",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/disney.srs"
+        "tag": "bilibili",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/bilibili.srs"
       },
       {
         "type": "remote",
@@ -720,18 +687,8 @@
       },
       {
         "type": "remote",
-        "tag": "primevideo",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/primevideo.srs"
-      },
-      {
-        "type": "remote",
-        "tag": "amazon",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/amazon.srs"
-      },
-      {
-        "type": "remote",
-        "tag": "apple",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/apple.srs"
+        "tag": "youtube",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/youtube.srs"
       },
       {
         "type": "remote",
@@ -740,12 +697,17 @@
       },
       {
         "type": "remote",
+        "tag": "apple",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/apple.srs"
+      },
+      {
+        "type": "remote",
         "tag": "microsoft",
         "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/microsoft.srs"
       },
       {
         "type": "remote",
-        "tag": "geolocation-!cn",
+        "tag": "global",
         "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/geolocation-!cn.srs"
       },
       {
@@ -759,8 +721,9 @@
         "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geoip/cn.srs"
       }
     ],
+    "final": "Final",
     "auto_detect_interface": true,
-    "default_domain_resolver": "aliyun"
+    "default_domain_resolver": "local"
   },
   "experimental": {
     "cache_file": {
