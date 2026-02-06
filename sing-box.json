@@ -6,21 +6,9 @@
   "dns": {
     "servers": [
       {
-        "type": "local",
-        "tag": "local"
-      },
-      {
-        "type": "https",
-        "tag": "google",
-        "detour": "Proxy",
-        "domain_resolver": "local",
-        "server": "dns.google"
-      },
-      {
         "type": "quic",
         "tag": "aliyun",
-        "domain_resolver": "local",
-        "server": "dns.alidns.com"
+        "server": "223.5.5.5"
       },
       {
         "type": "fakeip",
@@ -43,26 +31,11 @@
       },
       {
         "clash_mode": "global",
-        "server": "google"
+        "server": "remote"
       },
       {
         "rule_set": "cn",
         "server": "aliyun"
-      },
-      {
-        "type": "logical",
-        "mode": "and",
-        "rules": [
-          {
-            "rule_set": "global",
-            "invert": true
-          },
-          {
-            "rule_set": "cn-ip"
-          }
-        ],
-        "server": "google",
-        "client_subnet": "114.114.114.114/24"
       },
       {
         "query_type": [
@@ -723,7 +696,7 @@
     ],
     "final": "Final",
     "auto_detect_interface": true,
-    "default_domain_resolver": "local"
+    "default_domain_resolver": "aliyun"
   },
   "experimental": {
     "cache_file": {
