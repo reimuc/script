@@ -62,6 +62,15 @@
       "tag": "tproxy-in",
       "listen": "::",
       "listen_port": 12345
+    },
+    {
+      "type": "tun",
+      "address": [
+        "172.18.0.1/30",
+        "fdfe:dcba:9876::1/126"
+      ],
+      "auto_route": true,
+      "strict_route": true
     }
   ],
   "outbounds": [
@@ -72,7 +81,7 @@
     },
     {
       "type": "selector",
-      "tag": "Static",
+      "tag": "Available",
       "outbounds": [
         "Auto",
         "HK",
@@ -81,8 +90,8 @@
         "KR",
         "US",
         "SG",
-        "Direct",
-        "Proxy"
+        "Proxy",
+        "Direct"
       ]
     },
     {
@@ -94,7 +103,7 @@
       "type": "selector",
       "tag": "Steam",
       "outbounds": [
-        "Static",
+        "Available",
         "HK",
         "TW",
         "JP",
@@ -107,24 +116,9 @@
     },
     {
       "type": "selector",
-      "tag": "AI",
+      "tag": "Game",
       "outbounds": [
-        "Static",
-        "HK",
-        "TW",
-        "JP",
-        "KR",
-        "US",
-        "SG",
-        "Direct"
-      ],
-      "default": "US"
-    },
-    {
-      "type": "selector",
-      "tag": "Games",
-      "outbounds": [
-        "Static",
+        "Available",
         "HK",
         "TW",
         "JP",
@@ -137,9 +131,24 @@
     },
     {
       "type": "selector",
+      "tag": "AI",
+      "outbounds": [
+        "Available",
+        "HK",
+        "TW",
+        "JP",
+        "KR",
+        "US",
+        "SG",
+        "Direct"
+      ],
+      "default": "US"
+    },
+    {
+      "type": "selector",
       "tag": "PayPal",
       "outbounds": [
-        "Static",
+        "Available",
         "HK",
         "TW",
         "JP",
@@ -154,7 +163,7 @@
       "type": "selector",
       "tag": "Telegram",
       "outbounds": [
-        "Static",
+        "Available",
         "HK",
         "TW",
         "JP",
@@ -168,7 +177,7 @@
       "type": "selector",
       "tag": "X",
       "outbounds": [
-        "Static",
+        "Available",
         "HK",
         "TW",
         "JP",
@@ -182,7 +191,7 @@
       "type": "selector",
       "tag": "Discord",
       "outbounds": [
-        "Static",
+        "Available",
         "HK",
         "TW",
         "JP",
@@ -196,7 +205,7 @@
       "type": "selector",
       "tag": "Facebook",
       "outbounds": [
-        "Static",
+        "Available",
         "HK",
         "TW",
         "JP",
@@ -220,7 +229,7 @@
       "type": "selector",
       "tag": "Spotify",
       "outbounds": [
-        "Static",
+        "Available",
         "HK",
         "TW",
         "JP",
@@ -234,7 +243,7 @@
       "type": "selector",
       "tag": "TikTok",
       "outbounds": [
-        "Static",
+        "Available",
         "HK",
         "TW",
         "JP",
@@ -258,7 +267,7 @@
       "type": "selector",
       "tag": "Netflix",
       "outbounds": [
-        "Static",
+        "Available",
         "HK",
         "TW",
         "JP",
@@ -273,7 +282,7 @@
       "type": "selector",
       "tag": "YouTube",
       "outbounds": [
-        "Static",
+        "Available",
         "HK",
         "TW",
         "JP",
@@ -288,7 +297,7 @@
       "type": "selector",
       "tag": "Google",
       "outbounds": [
-        "Static",
+        "Available",
         "HK",
         "TW",
         "JP",
@@ -302,7 +311,7 @@
       "type": "selector",
       "tag": "Apple",
       "outbounds": [
-        "Static",
+        "Available",
         "HK",
         "TW",
         "JP",
@@ -316,7 +325,7 @@
       "type": "selector",
       "tag": "Microsoft",
       "outbounds": [
-        "Static",
+        "Available",
         "HK",
         "TW",
         "JP",
@@ -331,14 +340,14 @@
       "tag": "Bypass",
       "outbounds": [
         "Direct",
-        "Static"
+        "Proxy"
       ]
     },
     {
       "type": "selector",
       "tag": "Final",
       "outbounds": [
-        "Static",
+        "Available",
         "Bypass"
       ]
     },
@@ -346,61 +355,61 @@
       "type": "urltest",
       "tag": "Auto",
       "use_all_providers": true,
-      "url": "https://www.gstatic.com/generate_204",
+      "url": "http://cp.cloudflare.com/generate_204",
       "interval": "10m0s",
       "tolerance": 50
     },
     {
       "type": "urltest",
       "tag": "HK",
-      "include": "(?i)🇭🇰|港|HK|Hong",
+      "include": "(?i)(🇭🇰|港|HK|Hong)",
       "use_all_providers": true,
-      "url": "https://www.gstatic.com/generate_204",
+      "url": "http://cp.cloudflare.com/generate_204",
       "interval": "10m0s",
       "tolerance": 50
     },
     {
       "type": "urltest",
       "tag": "TW",
-      "include": "(?i)🇹🇼|台|TW|Tai",
+      "include": "(?i)(🇹🇼|台|TW|Tai)",
       "use_all_providers": true,
-      "url": "https://www.gstatic.com/generate_204",
+      "url": "http://cp.cloudflare.com/generate_204",
       "interval": "10m0s",
       "tolerance": 50
     },
     {
       "type": "urltest",
       "tag": "JP",
-      "include": "(?i)🇯🇵|日|东京|大阪|JP|Japan",
+      "include": "(?i)(🇯🇵|日本|川日|东京|大阪|泉日|埼玉|沪日|深日|JP|Japan)",
       "use_all_providers": true,
-      "url": "https://www.gstatic.com/generate_204",
+      "url": "http://cp.cloudflare.com/generate_204",
       "interval": "10m0s",
       "tolerance": 50
     },
     {
       "type": "urltest",
       "tag": "KR",
-      "include": "(?i)🇰🇷|韩|韓|朝|首尔|KR|Korea",
+      "include": "(?i)(🇰🇷|首尔|韩|韓|KR|KOR|Korea)",
       "use_all_providers": true,
-      "url": "https://www.gstatic.com/generate_204",
+      "url": "http://cp.cloudflare.com/generate_204",
       "interval": "10m0s",
       "tolerance": 50
     },
     {
       "type": "urltest",
       "tag": "US",
-      "include": "(?i)🇺🇸|美|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|US|States|American",
+      "include": "(?i)(🇺🇸|美|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|US|United States)",
       "use_all_providers": true,
-      "url": "https://www.gstatic.com/generate_204",
+      "url": "http://cp.cloudflare.com/generate_204",
       "interval": "10m0s",
       "tolerance": 50
     },
     {
       "type": "urltest",
       "tag": "SG",
-      "include": "(?i)🇸🇬|新|狮|獅|SG|Singapore",
+      "include": "(?i)(🇸🇬|新加坡|坡|狮城|SG|Singapore)",
       "use_all_providers": true,
-      "url": "https://www.gstatic.com/generate_204",
+      "url": "http://cp.cloudflare.com/generate_204",
       "interval": "10m0s",
       "tolerance": 50
     }
@@ -462,12 +471,12 @@
         "outbound": "Steam"
       },
       {
-        "rule_set": "ai",
-        "outbound": "AI"
+        "rule_set": "game",
+        "outbound": "Game"
       },
       {
-        "rule_set": "games",
-        "outbound": "Games"
+        "rule_set": "ai",
+        "outbound": "AI"
       },
       {
         "rule_set": "paypal",
@@ -527,7 +536,7 @@
       },
       {
         "rule_set": "global",
-        "outbound": "Static"
+        "outbound": "Available"
       },
       {
         "rule_set": [
@@ -600,13 +609,13 @@
       },
       {
         "type": "remote",
-        "tag": "ai",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/category-ai-!cn.srs"
+        "tag": "game",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/category-games.srs"
       },
       {
         "type": "remote",
-        "tag": "games",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/category-games.srs"
+        "tag": "ai",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/category-ai-!cn.srs"
       },
       {
         "type": "remote",
