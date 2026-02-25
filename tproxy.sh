@@ -61,14 +61,8 @@ table inet sing-box {
         ip daddr { 127.0.0.0/8, 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, 224.0.0.0/4, 255.255.255.255 } return
         ip6 daddr { ::1, fe80::/10, fc00::/7, ff00::/8 } return
 
-        # 2. Block DoT (853) to force fallback to standard DNS
-        meta l4proto { tcp, udp } th dport 853 reject comment "Block DoT"
-
-        # 3. Hijack DNS traffic (TCP/UDP 53) to Sing-Box
-        meta l4proto { tcp, udp } th dport 53 tproxy to :$PROXY_PORT meta mark set $PROXY_FWMARK accept comment "Hijack DNS"
-
-        # 4. Redirect remaining traffic to Sing-Box
-        meta l4proto { tcp, udp } tproxy to :$PROXY_PORT meta mark set $PROXY_FWMARK accept comment "TProxy"
+        # 2. Redirect remaining traffic to Sing-Box
+        meta l4proto { tcp, udp } tproxy to :$PROXY_PORT meta mark set $PROXY_FWMARK counter accept comment "TProxy redirect to sing-box"
     }
 
     chain output {
@@ -82,7 +76,7 @@ table inet sing-box {
         ip6 daddr { ::1, fe80::/10, fc00::/7, ff00::/8 } return
 
         # 3. Mark TCP/UDP packets for rerouting to TProxy
-        meta l4proto { tcp, udp } meta mark set $PROXY_FWMARK
+        meta l4proto { tcp, udp } meta mark set $PROXY_FWMARK counter accept comment "Mark local-originated packets for TProxy"
     }
 }
 EOF
