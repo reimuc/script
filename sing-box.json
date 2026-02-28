@@ -8,6 +8,7 @@
       {
         "type": "quic",
         "tag": "google",
+        "detour": "Proxy",
         "server": "8.8.8.8"
       },
       {
@@ -24,7 +25,7 @@
     ],
     "rules": [
       {
-        "rule_set": "awavenue-ads",
+        "rule_set": "ads",
         "action": "reject"
       },
       {
@@ -33,11 +34,30 @@
       },
       {
         "clash_mode": "global",
-        "server": "remote"
+        "server": "google"
       },
       {
         "rule_set": "cn",
         "server": "aliyun"
+      },
+      {
+        "type": "logical",
+        "mode": "and",
+        "rules": [
+          {
+            "rule_set": [
+              "tld",
+              "gfw",
+              "proxy"
+            ],
+            "invert": true
+          },
+          {
+            "rule_set": "cn_ip"
+          }
+        ],
+        "server": "google",
+        "client_subnet": "114.114.114.114/24"
       },
       {
         "query_type": [
@@ -78,11 +98,6 @@
   "outbounds": [
     {
       "type": "selector",
-      "tag": "Proxy",
-      "use_all_providers": true
-    },
-    {
-      "type": "selector",
       "tag": "Available",
       "outbounds": [
         "Auto",
@@ -97,28 +112,18 @@
       ]
     },
     {
+      "type": "selector",
+      "tag": "Proxy",
+      "use_all_providers": true
+    },
+    {
       "type": "direct",
       "tag": "Direct",
       "routing_mark": "0xff"
     },
     {
       "type": "selector",
-      "tag": "Steam",
-      "outbounds": [
-        "Available",
-        "HK",
-        "TW",
-        "JP",
-        "KR",
-        "US",
-        "SG",
-        "Direct"
-      ],
-      "default": "US"
-    },
-    {
-      "type": "selector",
-      "tag": "Game",
+      "tag": "Trackers",
       "outbounds": [
         "Available",
         "HK",
@@ -133,7 +138,7 @@
     },
     {
       "type": "selector",
-      "tag": "AI",
+      "tag": "Google",
       "outbounds": [
         "Available",
         "HK",
@@ -144,11 +149,55 @@
         "SG",
         "Direct"
       ],
-      "default": "US"
+      "default": "Direct"
     },
     {
       "type": "selector",
-      "tag": "PayPal",
+      "tag": "Apple",
+      "outbounds": [
+        "Available",
+        "HK",
+        "TW",
+        "JP",
+        "KR",
+        "US",
+        "SG",
+        "Direct"
+      ],
+      "default": "Direct"
+    },
+    {
+      "type": "selector",
+      "tag": "Microsoft",
+      "outbounds": [
+        "Available",
+        "HK",
+        "TW",
+        "JP",
+        "KR",
+        "US",
+        "SG",
+        "Direct"
+      ],
+      "default": "Direct"
+    },
+    {
+      "type": "selector",
+      "tag": "Games",
+      "outbounds": [
+        "Available",
+        "HK",
+        "TW",
+        "JP",
+        "KR",
+        "US",
+        "SG",
+        "Direct"
+      ]
+    },
+    {
+      "type": "selector",
+      "tag": "AI",
       "outbounds": [
         "Available",
         "HK",
@@ -173,57 +222,17 @@
         "US",
         "SG",
         "Direct"
-      ]
-    },
-    {
-      "type": "selector",
-      "tag": "X",
-      "outbounds": [
-        "Available",
-        "HK",
-        "TW",
-        "JP",
-        "KR",
-        "US",
-        "SG",
-        "Direct"
-      ]
-    },
-    {
-      "type": "selector",
-      "tag": "Discord",
-      "outbounds": [
-        "Available",
-        "HK",
-        "TW",
-        "JP",
-        "KR",
-        "US",
-        "SG",
-        "Direct"
-      ]
-    },
-    {
-      "type": "selector",
-      "tag": "Facebook",
-      "outbounds": [
-        "Available",
-        "HK",
-        "TW",
-        "JP",
-        "KR",
-        "US",
-        "SG",
-        "Direct"
-      ]
+      ],
+      "default": "SG"
     },
     {
       "type": "selector",
       "tag": "Bahamut",
       "outbounds": [
-        "Direct",
+        "Available",
         "TW",
-        "HK"
+        "HK",
+        "Direct"
       ],
       "default": "TW"
     },
@@ -260,10 +269,12 @@
       "type": "selector",
       "tag": "BiliBili",
       "outbounds": [
-        "Direct",
+        "Available",
         "TW",
-        "HK"
-      ]
+        "HK",
+        "Direct"
+      ],
+      "default": "Direct"
     },
     {
       "type": "selector",
@@ -297,7 +308,7 @@
     },
     {
       "type": "selector",
-      "tag": "Google",
+      "tag": "Media",
       "outbounds": [
         "Available",
         "HK",
@@ -311,7 +322,7 @@
     },
     {
       "type": "selector",
-      "tag": "Apple",
+      "tag": "Speedtest",
       "outbounds": [
         "Available",
         "HK",
@@ -321,28 +332,15 @@
         "US",
         "SG",
         "Direct"
-      ]
-    },
-    {
-      "type": "selector",
-      "tag": "Microsoft",
-      "outbounds": [
-        "Available",
-        "HK",
-        "TW",
-        "JP",
-        "KR",
-        "US",
-        "SG",
-        "Direct"
-      ]
+      ],
+      "default": "Direct"
     },
     {
       "type": "selector",
       "tag": "Bypass",
       "outbounds": [
         "Direct",
-        "Proxy"
+        "Available"
       ]
     },
     {
@@ -350,7 +348,7 @@
       "tag": "Final",
       "outbounds": [
         "Available",
-        "Bypass"
+        "Direct"
       ]
     },
     {
@@ -460,59 +458,52 @@
         "action": "reject"
       },
       {
-        "rule_set": "awavenue-ads",
+        "rule_set": "ads",
         "action": "reject"
       },
       {
         "rule_set": [
           "private",
-          "private-ip"
+          "private_ip"
         ],
         "outbound": "Direct"
       },
       {
         "rule_set": [
-          "googlefcm",
-          "category-dev@cn",
-          "category-games@cn",
-          "category-media@cn",
-          "google@cn",
-          "apple@cn",
-          "microsoft@cn"
+          "trackers",
+          "games-cn"
         ],
-        "outbound": "Bypass"
+        "outbound": "Trackers"
       },
       {
-        "rule_set": "steam",
-        "outbound": "Steam"
+        "rule_set": "google-cn",
+        "outbound": "Google"
       },
       {
-        "rule_set": "game",
-        "outbound": "Game"
+        "rule_set": "apple-cn",
+        "outbound": "Apple"
+      },
+      {
+        "rule_set": "microsoft-cn",
+        "outbound": "Microsoft"
+      },
+      {
+        "rule_set": [
+          "games",
+          "games_ip"
+        ],
+        "outbound": "Games"
       },
       {
         "rule_set": "ai",
         "outbound": "AI"
       },
       {
-        "rule_set": "paypal",
-        "outbound": "PayPal"
-      },
-      {
-        "rule_set": "telegram",
+        "rule_set": [
+          "telegram",
+          "telegram_ip"
+        ],
         "outbound": "Telegram"
-      },
-      {
-        "rule_set": "x",
-        "outbound": "X"
-      },
-      {
-        "rule_set": "discord",
-        "outbound": "Discord"
-      },
-      {
-        "rule_set": "facebook",
-        "outbound": "Facebook"
       },
       {
         "rule_set": "bahamut",
@@ -531,7 +522,10 @@
         "outbound": "BiliBili"
       },
       {
-        "rule_set": "netflix",
+        "rule_set": [
+          "netflix",
+          "netflix_ip"
+        ],
         "outbound": "Netflix"
       },
       {
@@ -539,25 +533,28 @@
         "outbound": "YouTube"
       },
       {
-        "rule_set": "google",
-        "outbound": "Google"
+        "rule_set": [
+          "media",
+          "media_ip"
+        ],
+        "outbound": "Media"
       },
       {
-        "rule_set": "apple",
-        "outbound": "Apple"
+        "rule_set": "speedtest",
+        "outbound": "Speedtest"
       },
       {
-        "rule_set": "microsoft",
-        "outbound": "Microsoft"
-      },
-      {
-        "rule_set": "global",
+        "rule_set": [
+          "tld",
+          "gfw",
+          "proxy"
+        ],
         "outbound": "Available"
       },
       {
         "rule_set": [
           "cn",
-          "cn-ip"
+          "cn_ip"
         ],
         "outbound": "Bypass"
       }
@@ -565,153 +562,143 @@
     "rule_set": [
       {
         "type": "remote",
-        "tag": "awavenue-ads",
-        "url": "https://raw.githubusercontent.com/TG-Twilight/AWAvenue-Ads-Rule/main/Filters/AWAvenue-Ads-Rule-Singbox.json"
+        "tag": "ads",
+        "url": "https://github.com/DustinWin/ruleset_geodata/releases/download/sing-box-ruleset/ads.srs"
       },
       {
         "type": "remote",
         "tag": "private",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/private.srs"
+        "url": "https://github.com/DustinWin/ruleset_geodata/releases/download/sing-box-ruleset/private.srs"
       },
       {
         "type": "remote",
-        "tag": "private-ip",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geoip/private.srs"
+        "tag": "private_ip",
+        "url": "https://github.com/DustinWin/ruleset_geodata/releases/download/sing-box-ruleset/privateip.srs"
       },
       {
         "type": "remote",
-        "tag": "googlefcm",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/googlefcm.srs"
+        "tag": "trackers",
+        "url": "https://github.com/DustinWin/ruleset_geodata/releases/download/sing-box-ruleset/trackerslist.srs"
       },
       {
         "type": "remote",
-        "tag": "category-dev@cn",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/category-dev@cn.srs"
+        "tag": "games-cn",
+        "url": "https://github.com/DustinWin/ruleset_geodata/releases/download/sing-box-ruleset/games-cn.srs"
       },
       {
         "type": "remote",
-        "tag": "category-games@cn",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/category-games@cn.srs"
+        "tag": "google-cn",
+        "url": "https://github.com/DustinWin/ruleset_geodata/releases/download/sing-box-ruleset/google-cn.srs"
       },
       {
         "type": "remote",
-        "tag": "category-media@cn",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/category-media@cn.srs"
+        "tag": "apple-cn",
+        "url": "https://github.com/DustinWin/ruleset_geodata/releases/download/sing-box-ruleset/apple-cn.srs"
       },
       {
         "type": "remote",
-        "tag": "google@cn",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/google@cn.srs"
+        "tag": "microsoft-cn",
+        "url": "https://github.com/DustinWin/ruleset_geodata/releases/download/sing-box-ruleset/microsoft-cn.srs"
       },
       {
         "type": "remote",
-        "tag": "apple@cn",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/apple@cn.srs"
+        "tag": "games",
+        "url": "https://github.com/DustinWin/ruleset_geodata/releases/download/sing-box-ruleset/games.srs"
       },
       {
         "type": "remote",
-        "tag": "microsoft@cn",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/microsoft@cn.srs"
-      },
-      {
-        "type": "remote",
-        "tag": "steam",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/steam.srs"
-      },
-      {
-        "type": "remote",
-        "tag": "game",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/category-games.srs"
+        "tag": "games_ip",
+        "url": "https://github.com/DustinWin/ruleset_geodata/releases/download/sing-box-ruleset/gamesip.srs"
       },
       {
         "type": "remote",
         "tag": "ai",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/category-ai-!cn.srs"
-      },
-      {
-        "type": "remote",
-        "tag": "paypal",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/paypal.srs"
+        "url": "https://github.com/DustinWin/ruleset_geodata/releases/download/sing-box-ruleset/ai.srs"
       },
       {
         "type": "remote",
         "tag": "telegram",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/telegram.srs"
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/telegram.srs"
       },
       {
         "type": "remote",
-        "tag": "x",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/x.srs"
-      },
-      {
-        "type": "remote",
-        "tag": "discord",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/discord.srs"
-      },
-      {
-        "type": "remote",
-        "tag": "facebook",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/meta.srs"
+        "tag": "telegram_ip",
+        "url": "https://github.com/DustinWin/ruleset_geodata/releases/download/sing-box-ruleset/telegramip.srs"
       },
       {
         "type": "remote",
         "tag": "bahamut",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/bahamut.srs"
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/bahamut.srs"
       },
       {
         "type": "remote",
         "tag": "spotify",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/spotify.srs"
+        "url": "https://github.com/DustinWin/ruleset_geodata/releases/download/sing-box-ruleset/spotify.srs"
       },
       {
         "type": "remote",
         "tag": "tiktok",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/tiktok.srs"
+        "url": "https://github.com/DustinWin/ruleset_geodata/releases/download/sing-box-ruleset/tiktok.srs"
       },
       {
         "type": "remote",
         "tag": "bilibili",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/bilibili.srs"
+        "url": "https://github.com/DustinWin/ruleset_geodata/releases/download/sing-box-ruleset/bilibili.srs"
       },
       {
         "type": "remote",
         "tag": "netflix",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/netflix.srs"
+        "url": "https://github.com/DustinWin/ruleset_geodata/releases/download/sing-box-ruleset/netflix.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "netflix_ip",
+        "url": "https://github.com/DustinWin/ruleset_geodata/releases/download/sing-box-ruleset/netflixip.srs"
       },
       {
         "type": "remote",
         "tag": "youtube",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/youtube.srs"
+        "url": "https://github.com/DustinWin/ruleset_geodata/releases/download/sing-box-ruleset/youtube.srs"
       },
       {
         "type": "remote",
-        "tag": "google",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/google.srs"
+        "tag": "media",
+        "url": "https://github.com/DustinWin/ruleset_geodata/releases/download/sing-box-ruleset/media.srs"
       },
       {
         "type": "remote",
-        "tag": "apple",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/apple.srs"
+        "tag": "media_ip",
+        "url": "https://github.com/DustinWin/ruleset_geodata/releases/download/sing-box-ruleset/mediaip.srs"
       },
       {
         "type": "remote",
-        "tag": "microsoft",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/microsoft.srs"
+        "tag": "speedtest",
+        "url": "https://github.com/DustinWin/ruleset_geodata/releases/download/sing-box-ruleset/networktest.srs"
       },
       {
         "type": "remote",
-        "tag": "global",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/geolocation-!cn.srs"
+        "tag": "tld",
+        "url": "https://github.com/DustinWin/ruleset_geodata/releases/download/sing-box-ruleset/tld-proxy.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "gfw",
+        "url": "https://github.com/DustinWin/ruleset_geodata/releases/download/sing-box-ruleset/gfw.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "proxy",
+        "url": "https://github.com/DustinWin/ruleset_geodata/releases/download/sing-box-ruleset/proxy.srs"
       },
       {
         "type": "remote",
         "tag": "cn",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/cn.srs"
+        "url": "https://github.com/DustinWin/ruleset_geodata/releases/download/sing-box-ruleset/cn.srs"
       },
       {
         "type": "remote",
-        "tag": "cn-ip",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geoip/cn.srs"
+        "tag": "cn_ip",
+        "url": "https://github.com/DustinWin/ruleset_geodata/releases/download/sing-box-ruleset/cnip.srs"
       }
     ],
     "final": "Final",
