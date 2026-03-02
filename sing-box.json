@@ -6,7 +6,7 @@
   "dns": {
     "servers": [
       {
-        "type": "quic",
+        "type": "tls",
         "tag": "google",
         "detour": "Proxy",
         "server": "8.8.8.8"
@@ -471,7 +471,8 @@
       {
         "rule_set": [
           "trackers",
-          "games-cn"
+          "games-cn",
+          "hoyoverse"
         ],
         "outbound": "Trackers"
       },
@@ -584,6 +585,11 @@
         "type": "remote",
         "tag": "games-cn",
         "url": "https://github.com/DustinWin/ruleset_geodata/releases/download/sing-box-ruleset/games-cn.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "hoyoverse",
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo/geosite/hoyoverse.srs"
       },
       {
         "type": "remote",
