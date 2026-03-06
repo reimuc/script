@@ -65,7 +65,6 @@ table inet $NFT_TABLE {
     type ipv4_addr
     flags interval
     elements = {
-      0.0.0.0/8,        # this-network / 异常目的地址（防御性）
       10.0.0.0/8,       # RFC1918
       100.64.0.0/10,    # CGNAT
       127.0.0.0/8,      # loopback（虽然 fib local 常能覆盖，但保留也很便于理解）
@@ -79,7 +78,6 @@ table inet $NFT_TABLE {
     type ipv6_addr
     flags interval
     elements = {
-      ::/128,        # unspecified
       ::1/128,       # loopback（同上，fib local 通常覆盖，但保留更直观）
       fc00::/7,      # ULA
       fe80::/10      # link-local
@@ -99,10 +97,6 @@ table inet $NFT_TABLE {
   chain prerouting {
     type filter hook prerouting priority mangle; policy accept;
 
-    meta mark $ROUTING_MARK return
-
-    iif lo return
-
     meta l4proto != { tcp, udp } return
 
     jump divert
@@ -110,11 +104,9 @@ table inet $NFT_TABLE {
     fib daddr type local return
     fib daddr type { multicast, broadcast } return
 
-    # 3) 放行保留地址段（私网/链路本地/测试段等）
     ip  daddr @byp4 return
     ip6 daddr @byp6 return
 
-    # 4) 其余 tcp/udp 做 tproxy 并打 mark（仅端口写法，inet 下 v4/v6 通用）
     meta l4proto { tcp, udp } tproxy to :$PROXY_PORT meta mark set $PROXY_FWMARK counter accept comment "TProxy -> sing-box"
   }
 
@@ -125,8 +117,6 @@ table inet $NFT_TABLE {
     type route hook output priority mangle; policy accept;
 
     meta mark $ROUTING_MARK return
-
-    oif lo return
 
     meta l4proto != { tcp, udp } return
 
@@ -152,7 +142,6 @@ start() {
 stop() {
   nft delete table inet $NFT_TABLE 2>/dev/null || true
 
-  # 清理策略路由
   while ip rule show | grep -q "fwmark $PROXY_FWMARK.*lookup $PROXY_TABLE"; do
     ip rule del fwmark $PROXY_FWMARK table $PROXY_TABLE
   done

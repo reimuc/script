@@ -6,7 +6,7 @@
   "dns": {
     "servers": [
       {
-        "type": "tls",
+        "type": "quic",
         "tag": "google",
         "detour": "Proxy",
         "server": "8.8.8.8"
