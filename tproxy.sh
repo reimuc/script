@@ -72,7 +72,6 @@ table inet $NFT_TABLE {
       169.254.0.0/16,   # IPv4 link-local
       172.16.0.0/12,    # RFC1918
       192.168.0.0/16,   # RFC1918
-      198.18.0.0/15     # benchmark / 测试网段（很多 fakeip/测试会用到）
     }
   }
 
@@ -100,16 +99,15 @@ table inet $NFT_TABLE {
   chain prerouting {
     type filter hook prerouting priority mangle; policy accept;
 
-    # 只处理 tcp/udp
+    meta mark $ROUTING_MARK return
+
+    iif lo return
+
     meta l4proto != { tcp, udp } return
 
-    # 可选 divert（仅 tcp）：先处理已透明 socket
     jump divert
 
-    # 1) 放行目的为本机(local) —— 防止访问路由器自身服务异常 & 防回环
     fib daddr type local return
-
-    # 2) 放行组播/广播（mDNS/SSDP 等），避免干扰局域网发现
     fib daddr type { multicast, broadcast } return
 
     # 3) 放行保留地址段（私网/链路本地/测试段等）
@@ -126,21 +124,18 @@ table inet $NFT_TABLE {
   chain output {
     type route hook output priority mangle; policy accept;
 
-    # 0) 排除 sing-box 自己的出站，防止代理回环（你在 sing-box outbounds 用 routing_mark=0xff）
     meta mark $ROUTING_MARK return
 
-    # 只处理 tcp/udp
+    oif lo return
+
     meta l4proto != { tcp, udp } return
 
-    # 1) 放行目的为本机/组播/广播
     fib daddr type local return
     fib daddr type { multicast, broadcast } return
 
-    # 2) 放行保留地址段
     ip  daddr @byp4 return
     ip6 daddr @byp6 return
 
-    # 3) 其余打 mark，让策略路由把包送回本机 lo，再到 prerouting 被 tproxy
     meta l4proto { tcp, udp } meta mark set $PROXY_FWMARK counter accept comment "Mark local-originated -> TProxy"
   }
 }

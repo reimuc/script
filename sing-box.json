@@ -19,8 +19,8 @@
       {
         "type": "fakeip",
         "tag": "remote",
-        "inet4_range": "198.18.0.0/15",
-        "inet6_range": "fc00::/18"
+        "inet4_range": "198.18.0.1/16",
+        "inet6_range": "fd7a:1b2c:3d4e::/48"
       }
     ],
     "rules": [
