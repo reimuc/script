@@ -1,8 +1,8 @@
 #!/bin/sh
 
-WAN_USER='宽带账号'
-WAN_PASS='宽带密码'
-WIFI_KEY='WiFi密码'
+WAN_USER='Username'
+WAN_PASS='Password'
+WIFI_KEY='WiFi_PWD'
 
 echo "[init] configure PPPoE..."
 uci batch <<EOF
@@ -12,9 +12,10 @@ set network.wan.password='${WAN_PASS}'
 commit network
 EOF
 
-echo "[init] configure 5GHz WiFi..."
+echo "[init] configure 5GHz WiFi (Country Code CN)..."
 uci batch <<EOF
 set wireless.radio1.disabled='0'
+set wireless.radio1.country='CN'
 set wireless.default_radio1.encryption='psk2'
 set wireless.default_radio1.key='${WIFI_KEY}'
 commit wireless
